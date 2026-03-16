@@ -60,18 +60,18 @@ const GAME_5_PHRASES = [
 ];
 
 const WHEEL_SEGMENTS = [
-  { label: "+1", value: 1, kind: "score", color: "#42c8ff" },
   { label: "+5", value: 5, kind: "score", color: "#4cdfa2" },
-  { label: "+10", value: 10, kind: "score", color: "#ffd166" },
-  { label: "+20", value: 20, kind: "score", color: "#ff9d63" },
-  { label: "-1", value: -1, kind: "score", color: "#7f5cff" },
-  { label: "-5", value: -5, kind: "score", color: "#9b5dff" },
-  { label: "-10", value: -10, kind: "score", color: "#ff4ec7" },
-  { label: "-20", value: -20, kind: "score", color: "#ff6b7d" },
   { label: "Piją wszyscy", kind: "event", color: "#23b7ff" },
+  { label: "-1", value: -1, kind: "score", color: "#7f5cff" },
+  { label: "+10", value: 10, kind: "score", color: "#ffd166" },
+  { label: "Bankrut", kind: "bankrupt", color: "#1b1f33" },
+  { label: "-5", value: -5, kind: "score", color: "#9b5dff" },
   { label: "Pije twoja drużyna", kind: "event", color: "#36e0c7" },
+  { label: "+1", value: 1, kind: "score", color: "#42c8ff" },
+  { label: "-20", value: -20, kind: "score", color: "#ff6b7d" },
+  { label: "+20", value: 20, kind: "score", color: "#ff9d63" },
   { label: "Pijesz ty", kind: "event", color: "#ff6ab0" },
-  { label: "Bankrut", kind: "bankrupt", color: "#1b1f33" }
+  { label: "-10", value: -10, kind: "score", color: "#ff4ec7" }
 ];
 
 const LETTER_PATTERN = /[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż]/;

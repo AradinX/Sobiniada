@@ -832,6 +832,10 @@ button {
 
 .music-stage {
   position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  min-height: 340px;
+  padding-top: 1.1rem;
 }
 
 .music-stage::before {
@@ -843,10 +847,15 @@ button {
 
 .music-light-row,
 .equalizer {
+  position: relative;
+  z-index: 0;
   display: flex;
   gap: 0.5rem;
   justify-content: center;
   align-items: flex-end;
+  height: 110px;
+  margin-top: 0.4rem;
+  pointer-events: none;
 }
 
 .stage-light {
@@ -880,9 +889,12 @@ button {
 
 .equalizer-bar {
   width: 12px;
+  height: 96px;
+  transform-origin: bottom center;
   border-radius: 999px 999px 4px 4px;
   background: linear-gradient(180deg, var(--cyan), var(--magenta));
   animation: equalizer-jump 1.5s ease-in-out infinite;
+  will-change: transform;
 }
 
 .equalizer-bar:nth-child(2n) {
@@ -896,18 +908,26 @@ button {
 @keyframes equalizer-jump {
   0%,
   100% {
-    height: 34px;
+    transform: scaleY(0.36);
   }
   50% {
-    height: 90px;
+    transform: scaleY(1);
   }
 }
 
 .music-notes {
+  position: relative;
+  z-index: 0;
   display: flex;
   justify-content: space-between;
   font-size: clamp(2rem, 5vw, 3.4rem);
   opacity: 0.9;
+  pointer-events: none;
+}
+
+.music-stage > *:not(.music-light-row):not(.equalizer):not(.music-notes) {
+  position: relative;
+  z-index: 1;
 }
 
 .music-notes span {
