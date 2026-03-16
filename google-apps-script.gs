@@ -67,8 +67,8 @@ function saveScore_(payload) {
   sheet.getRange("A2").setValue(payload.team1Name || "Team 1");
   sheet.getRange("A3").setValue(payload.team2Name || "Team 2");
 
-  sheet.getRange(2, scoreColumn).setValue(Number(payload.team1Score) || 0);
-  sheet.getRange(3, scoreColumn).setValue(Number(payload.team2Score) || 0);
+  sheet.getRange(2, scoreColumn).setValue(toScore_(payload.team1Score));
+  sheet.getRange(3, scoreColumn).setValue(toScore_(payload.team2Score));
 
   const row2Scores = sheet.getRange(2, 2, 1, TOTAL_GAMES).getValues()[0];
   const row3Scores = sheet.getRange(3, 2, 1, TOTAL_GAMES).getValues()[0];
@@ -81,7 +81,12 @@ function saveScore_(payload) {
 }
 
 function sumNumbers_(sum, value) {
-  return sum + (Number(value) || 0);
+  return sum + toScore_(value);
+}
+
+function toScore_(value) {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
 }
 
 function getSheet_() {
