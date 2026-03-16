@@ -1,106 +1,54 @@
-const TOTAL_GAMES = 7;
 const DEFAULT_TIMER_SECONDS = 60;
+const APPS_SCRIPT_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
 const STORAGE_KEYS = {
   teams: "gameNightTeams",
   scores: "gameNightScores"
 };
-
-// Replace this with your live Google Apps Script web app deployment URL.
-const APPS_SCRIPT_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
 
 const DEFAULT_TEAMS = {
   team1Name: "Drużyna 1",
   team2Name: "Drużyna 2"
 };
 
-const GAME_TITLES = [
-  "Gra 1: Blef",
-  "Gra 2: Ilość nie jakość",
-  "Gra 3: Koło fortuny",
-  "Gra 4: Kalambury",
-  "Gra 5: Wisielec",
-  "Gra 6: Znana postać",
-  "Gra 7: Już wkrótce"
-];
-
-const GAME_SUBTITLES = [
-  "Runda odbywa się na żywo, a ekran wspiera prowadzącego.",
-  "Plansza pytań, odkrywanie odpowiedzi i odliczanie czasu dla licytacji.",
-  "Interaktywne koło fortuny z wynikami dodatnimi, ujemnymi i specjalnymi.",
-  "Wsparcie czasowe i zasady dla klasycznej rundy na żywo.",
-  "Hasła, litery, zgadywanie fraz oraz koło fortuny w jednym module.",
-  "Panel prowadzącego do odejmowania punktów i śledzenia wartości rundy.",
-  "Miejsce przygotowane pod następną rozbudowę wieczoru gier."
+const ROUND_CONFIG = [
+  { id: "game-1", navLabel: "Gra 1", title: "Gra 1: Blef", summaryLabel: "Gra 1", kind: "game", layout: "compact", type: "blef" },
+  { id: "music-1", navLabel: "Kącik muzyczny 1", title: "Kącik muzyczny", summaryLabel: "Kącik muzyczny 1", kind: "intermission", layout: "compact", type: "music", ordinal: 1 },
+  { id: "game-2", navLabel: "Gra 2", title: "Gra 2: Ilość nie jakość", summaryLabel: "Gra 2", kind: "game", layout: "split", type: "quantity" },
+  { id: "acting-1", navLabel: "Odegraj postać 1", title: "Odegraj postać", summaryLabel: "Odegraj postać 1", kind: "intermission", layout: "compact", type: "acting", ordinal: 1 },
+  { id: "game-3", navLabel: "Gra 3", title: "Gra 3: Koło fortuny", summaryLabel: "Gra 3", kind: "game", layout: "split", type: "wheel" },
+  { id: "music-2", navLabel: "Kącik muzyczny 2", title: "Kącik muzyczny", summaryLabel: "Kącik muzyczny 2", kind: "intermission", layout: "compact", type: "music", ordinal: 2 },
+  { id: "game-4", navLabel: "Gra 4", title: "Gra 4: Kalambury", summaryLabel: "Gra 4", kind: "game", layout: "compact", type: "charades" },
+  { id: "acting-2", navLabel: "Odegraj postać 2", title: "Odegraj postać", summaryLabel: "Odegraj postać 2", kind: "intermission", layout: "compact", type: "acting", ordinal: 2 },
+  { id: "game-5", navLabel: "Gra 5", title: "Gra 5: Wisielec", summaryLabel: "Gra 5", kind: "game", layout: "split", type: "hangman" },
+  { id: "music-3", navLabel: "Kącik muzyczny 3", title: "Kącik muzyczny", summaryLabel: "Kącik muzyczny 3", kind: "intermission", layout: "compact", type: "music", ordinal: 3 },
+  { id: "game-6", navLabel: "Gra 6", title: "Gra 6: Znana postać", summaryLabel: "Gra 6", kind: "game", layout: "compact", type: "famous-person" }
 ];
 
 const GAME_2_QUESTIONS = [
   {
     question: "Wymień drużyny piłkarskie grające obecnie w lidze angielskiej:",
     answers: [
-      "Arsenal",
-      "Manchester City",
-      "Manchester United",
-      "Aston Villa",
-      "Liverpool",
-      "Chelsea",
-      "Brentford",
-      "Everton",
-      "Newcastle United",
-      "Bournemouth",
-      "Fulham",
-      "Brighton",
-      "Sunderland",
-      "Crystal Palace",
-      "Leeds United",
-      "Tottenham Hotspur",
-      "Nottingham Forest",
-      "West Ham United",
-      "Burnley",
-      "Wolverhampton Wanderers"
+      "Arsenal", "Manchester City", "Manchester United", "Aston Villa", "Liverpool",
+      "Chelsea", "Brentford", "Everton", "Newcastle United", "Bournemouth",
+      "Fulham", "Brighton", "Sunderland", "Crystal Palace", "Leeds United",
+      "Tottenham Hotspur", "Nottingham Forest", "West Ham United", "Burnley", "Wolverhampton Wanderers"
     ]
   },
   {
     question: "Wymień prezydentów polski:",
     answers: [
-      "Wojciech Jaruzelski",
-      "Lech Wałęsa",
-      "Aleksander Kwaśniewski",
-      "Lech Kaczyński",
-      "Bronisław Komorowski",
-      "Andrzej Duda",
-      "Karol Nawrocki"
+      "Wojciech Jaruzelski", "Lech Wałęsa", "Aleksander Kwaśniewski", "Lech Kaczyński",
+      "Bronisław Komorowski", "Andrzej Duda", "Karol Nawrocki"
     ]
   },
   {
     question: "Wymień państwa w UE:",
     answers: [
-      "Austria",
-      "Belgia",
-      "Bułgaria",
-      "Chorwacja",
-      "Cypr",
-      "Czechy",
-      "Dania",
-      "Estonia",
-      "Finlandia",
-      "Francja",
-      "Grecja",
-      "Hiszpania",
-      "Holandia",
-      "Irlandia",
-      "Litwa",
-      "Luksemburg",
-      "Łotwa",
-      "Malta",
-      "Niemcy",
-      "Polska",
-      "Portugalia",
-      "Rumunia",
-      "Słowacja",
-      "Słowenia",
-      "Szwecja",
-      "Węgry",
-      "Włochy"
+      "Austria", "Belgia", "Bułgaria", "Chorwacja", "Cypr", "Czechy", "Dania",
+      "Estonia", "Finlandia", "Francja", "Grecja", "Hiszpania", "Holandia", "Irlandia",
+      "Litwa", "Luksemburg", "Łotwa", "Malta", "Niemcy", "Polska", "Portugalia",
+      "Rumunia", "Słowacja", "Słowenia", "Szwecja", "Węgry", "Włochy"
     ]
   }
 ];
@@ -111,23 +59,19 @@ const GAME_5_PHRASES = [
   { category: "Albumy", phrase: "A nu jaho i kóltóra mósi być" }
 ];
 
-// Repeated entries intentionally shape the wheel probability distribution.
 const WHEEL_SEGMENTS = [
-  { label: "+1", value: 1, kind: "score", color: "#4cc9f0" },
-  { label: "+1", value: 1, kind: "score", color: "#4cc9f0" },
-  { label: "+5", value: 5, kind: "score", color: "#49df9f" },
-  { label: "+5", value: 5, kind: "score", color: "#49df9f" },
+  { label: "+1", value: 1, kind: "score", color: "#42c8ff" },
+  { label: "+5", value: 5, kind: "score", color: "#4cdfa2" },
   { label: "+10", value: 10, kind: "score", color: "#ffd166" },
-  { label: "+10", value: 10, kind: "score", color: "#ffd166" },
-  { label: "+20", value: 20, kind: "score", color: "#ff9966" },
+  { label: "+20", value: 20, kind: "score", color: "#ff9d63" },
   { label: "-1", value: -1, kind: "score", color: "#7f5cff" },
-  { label: "-5", value: -5, kind: "score", color: "#ae49ff" },
+  { label: "-5", value: -5, kind: "score", color: "#9b5dff" },
   { label: "-10", value: -10, kind: "score", color: "#ff4ec7" },
   { label: "-20", value: -20, kind: "score", color: "#ff6b7d" },
-  { label: "piją wszyscy", kind: "event", color: "#00c2ff" },
-  { label: "pije twoja drużyna", kind: "event", color: "#38d9a9" },
-  { label: "pijesz ty", kind: "event", color: "#f72585" },
-  { label: "bankrut", kind: "bankrupt", color: "#111827" }
+  { label: "Piją wszyscy", kind: "event", color: "#23b7ff" },
+  { label: "Pije twoja drużyna", kind: "event", color: "#36e0c7" },
+  { label: "Pijesz ty", kind: "event", color: "#ff6ab0" },
+  { label: "Bankrut", kind: "bankrupt", color: "#1b1f33" }
 ];
 
 const LETTER_PATTERN = /[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż]/;
@@ -135,14 +79,15 @@ const LETTER_PATTERN = /[A-Za-zĄąĆćĘęŁłŃńÓóŚśŹźŻż]/;
 const state = createInitialState();
 
 document.addEventListener("DOMContentLoaded", () => {
+  buildNavigation();
   cacheInitialState();
-  renderGameViews();
-  populateFormsFromStorage();
+  renderRounds();
+  populateWelcomeForm();
   bindWelcomeForm();
   bindNavigation();
   bindMenuToggle();
   bindResetButton();
-  hydrateScoreInputs();
+  hydrateRoundScoreInputs();
   refreshTeamNames();
   renderFinalScoreboard();
   showView("welcome");
@@ -152,47 +97,43 @@ function createInitialState() {
   return {
     teams: { ...DEFAULT_TEAMS },
     scores: createDefaultScores(),
-    game2: createGame2State(),
-    game5: createGame5State(),
-    game6: createGame6State(),
-    ui: {
-      timers: {},
-      wheels: {}
-    }
+    game2: {
+      currentQuestion: 0,
+      revealedAnswers: GAME_2_QUESTIONS.map((question) => Array(question.answers.length).fill(false))
+    },
+    game5: {
+      phraseIndex: 0,
+      guessedLetters: [],
+      missedLetters: [],
+      roundValue: 0,
+      statusMessage: "Zakreć kołem i zacznij zgadywać litery.",
+      messageType: "",
+      solved: false
+    },
+    game6: { roundScore: 20 },
+    ui: { timers: {}, wheels: {} }
   };
 }
 
 function createDefaultScores() {
-  return Array.from({ length: TOTAL_GAMES }, (_, index) => ({
-    game: index + 1,
-    team1Score: 0,
-    team2Score: 0
-  }));
+  return ROUND_CONFIG.reduce((accumulator, round) => {
+    accumulator[round.id] = { team1Score: 0, team2Score: 0 };
+    return accumulator;
+  }, {});
 }
 
-function createGame2State() {
-  return {
-    currentQuestion: 0,
-    revealedAnswers: GAME_2_QUESTIONS.map((question) => Array(question.answers.length).fill(false))
-  };
-}
+function buildNavigation() {
+  const navItems = [
+    { target: "welcome", label: "Start" },
+    ...ROUND_CONFIG.map((round) => ({ target: round.id, label: round.navLabel })),
+    { target: "final-score", label: "Wynik końcowy" }
+  ];
 
-function createGame5State() {
-  return {
-    phraseIndex: 0,
-    guessedLetters: [],
-    missedLetters: [],
-    roundValue: 0,
-    statusMessage: "Zakręć kołem i zacznij zgadywać litery.",
-    messageType: "",
-    solved: false
-  };
-}
-
-function createGame6State() {
-  return {
-    roundScore: 20
-  };
+  document.getElementById("mainNav").innerHTML = navItems.map((item, index) => `
+    <button class="nav-tab ${index === 0 ? "is-active" : ""}" type="button" data-target="${item.target}">
+      ${item.label}
+    </button>
+  `).join("");
 }
 
 function cacheInitialState() {
@@ -203,99 +144,173 @@ function cacheInitialState() {
     state.teams = storedTeams;
   }
 
-  if (Array.isArray(storedScores) && storedScores.length === TOTAL_GAMES) {
-    state.scores = storedScores.map((score, index) => ({
-      game: index + 1,
-      team1Score: toInteger(score.team1Score),
-      team2Score: toInteger(score.team2Score)
-    }));
+  if (storedScores && typeof storedScores === "object") {
+    ROUND_CONFIG.forEach((round) => {
+      state.scores[round.id] = {
+        team1Score: toInteger(storedScores[round.id]?.team1Score),
+        team2Score: toInteger(storedScores[round.id]?.team2Score)
+      };
+    });
   }
 }
 
-function renderGameViews() {
+function renderRounds() {
   clearAllTimers();
-  const gameViews = document.getElementById("gameViews");
-  const template = document.getElementById("gameTemplate");
-
-  gameViews.innerHTML = "";
+  const roundViews = document.getElementById("roundViews");
+  roundViews.innerHTML = "";
   state.ui.timers = {};
   state.ui.wheels = {};
 
-  for (let gameNumber = 1; gameNumber <= TOTAL_GAMES; gameNumber += 1) {
-    const clone = template.content.cloneNode(true);
-    const section = clone.querySelector("[data-view]");
-    const heading = clone.querySelector(".game-heading");
-    const subtitle = clone.querySelector(".game-subtitle");
-    const stage = clone.querySelector(".game-stage");
-    const form = clone.querySelector(".score-form");
-    const nextButton = clone.querySelector(".next-game-button");
-
-    section.id = `game-${gameNumber}`;
-    heading.textContent = GAME_TITLES[gameNumber - 1];
-    subtitle.textContent = GAME_SUBTITLES[gameNumber - 1];
-    stage.innerHTML = getGameStageMarkup(gameNumber);
-    form.dataset.game = String(gameNumber);
-    nextButton.dataset.game = String(gameNumber);
-    nextButton.textContent = gameNumber === TOTAL_GAMES ? "Wynik końcowy →" : "Następna gra →";
-
-    form.addEventListener("submit", async (event) => {
-      event.preventDefault();
-      await saveGameScore(gameNumber, { showSuccessToast: true });
-    });
-
-    nextButton.addEventListener("click", async () => {
-      const saved = await saveGameScore(gameNumber, { showSuccessToast: false });
-
-      if (saved) {
-        const nextTarget = gameNumber === TOTAL_GAMES ? "final-score" : `game-${gameNumber + 1}`;
-        showView(nextTarget);
-        showToast(`Zapisano wynik gry ${gameNumber}.`, "success");
-      }
-    });
-
-    gameViews.appendChild(clone);
-    setupGameSection(gameNumber);
-  }
+  ROUND_CONFIG.forEach((round, index) => {
+    const section = document.createElement("section");
+    section.className = "view-panel";
+    section.id = round.id;
+    section.dataset.view = "";
+    section.innerHTML = buildRoundSection(round, index);
+    roundViews.appendChild(section);
+    bindRoundBaseActions(section, round, index);
+    setupRoundFeatures(section, round);
+  });
 }
 
-function getGameStageMarkup(gameNumber) {
-  switch (gameNumber) {
-    case 1:
-      return `
-        <div class="stage-stack">
-          <article class="feature-card">
-            <div class="game-meta-bar">
-              <span class="inline-pill">Na żywo</span>
-              <span class="inline-pill">Punkty wpisuje prowadzący</span>
-            </div>
-            <h3>Blef</h3>
-            <ol class="rules-list">
-              <li>Blef – przed Wami stoją 2 kieliszki. W jednym z nich jest ciepła wódka, w drugim ciepła woda.</li>
-              <li>Osoba pijąca musi zwieść drużynę przeciwną.</li>
-              <li>Jeżeli uda się oszukać przeciwną drużynę, jej drużyna dostaje 10 pkt, a drużyna przeciwna wypija drugi kieliszek.</li>
-              <li>Jeżeli przeciwnicy poprawnie zgadną, oni dostają 10 pkt.</li>
-            </ol>
-          </article>
+function buildRoundSection(round, index) {
+  const nextLabel = index === ROUND_CONFIG.length - 1 ? "Wynik końcowy →" : "Dalej →";
+  const layoutClass = round.layout === "split" ? "round-layout-split" : "round-layout-compact";
 
-          <article class="feature-card placeholder-stage">
-            <div>
-              <h3>Scena gry</h3>
-              <p>
-                Ta runda dzieje się w rzeczywistości. Ekran pokazuje zasady i zostawia miejsce
-                na prowadzenie zabawy bez dodatkowej mechaniki.
-              </p>
-            </div>
-          </article>
+  return `
+    <div class="panel-header">
+      <div>
+        <p class="section-kicker">${round.kind === "intermission" ? "Intermisja" : "Runda"}</p>
+        <h2>${round.title}</h2>
+        <p class="panel-subtitle">${getRoundSubtitle(round)}</p>
+      </div>
+      <span class="status-pill">Wyniki ukryte do finału</span>
+    </div>
+
+    <div class="round-shell">
+      <div class="${layoutClass}">
+        <article class="round-body glass-card ${round.type}">
+          ${getRoundBodyMarkup(round)}
+        </article>
+        ${createScoreCard(round, nextLabel)}
+      </div>
+    </div>
+  `;
+}
+
+function createScoreCard(round, nextLabel) {
+  const wrapper = round.layout === "split" ? "aside" : "div";
+  return `
+    <${wrapper} class="score-card glass-card">
+      <h3>Karta punktacji</h3>
+      <div class="team-badges">
+        <div class="team-badge team-badge-a">
+          <span>Drużyna 1</span>
+          <strong class="team-name team-name-1">Drużyna 1</strong>
+        </div>
+        <div class="team-badge team-badge-b">
+          <span>Drużyna 2</span>
+          <strong class="team-name team-name-2">Drużyna 2</strong>
+        </div>
+      </div>
+
+      <form class="score-form" data-score-form="${round.id}">
+        <div class="score-actions two-columns">
+          <label class="input-card">
+            <span>Punkty drużyny 1</span>
+            <input class="team1-score-input" type="number" step="1" value="0" required>
+          </label>
+          <label class="input-card">
+            <span>Punkty drużyny 2</span>
+            <input class="team2-score-input" type="number" step="1" value="0" required>
+          </label>
+        </div>
+
+        <p class="score-note">
+          Możesz wpisywać dodatnie i ujemne wartości. Punkty zapisuje prowadzący.
+        </p>
+
+        <div class="compact-footer">
+          <button class="secondary-button large-action" type="submit">Zapisz wynik</button>
+          <button class="primary-button pulse-button large-action next-round-button" type="button" data-next-round="${round.id}">
+            ${nextLabel}
+          </button>
+        </div>
+      </form>
+    </${wrapper}>
+  `;
+}
+
+function getRoundSubtitle(round) {
+  if (round.type === "music") {
+    return "Słuchaj uważnie i zgarnij punkty dla swojej drużyny!";
+  }
+
+  if (round.type === "acting") {
+    return "Prowadzący wybiera drużynę, która najlepiej odegra wskazaną postać.";
+  }
+
+  const subtitles = {
+    blef: "Szybki support-screen do rundy na żywo z ręcznym wpisaniem punktów.",
+    quantity: "Pytania, odkrywanie odpowiedzi i stoper do licytacyjnej rywalizacji.",
+    wheel: "Koło fortuny z czytelnymi polami i widowiskowym spinem na żywo.",
+    charades: "Minimalistyczny ekran prowadzącego z timerem i zasadami rundy.",
+    hangman: "Wisielec z kołem, literami i podpowiedziami w stylu teleturnieju.",
+    "famous-person": "Panel prowadzącego do szybkiego odejmowania punktów w trakcie zgadywania."
+  };
+
+  return subtitles[round.type] || "Runda wydarzenia.";
+}
+
+function getRoundBodyMarkup(round) {
+  switch (round.type) {
+    case "blef":
+      return `
+        <div class="round-intro">
+          <div class="round-chip">Na żywo</div>
+          <h3>Blef</h3>
+          <ol class="rules-list">
+            <li>Blef – przed Wami stoją 2 kieliszki. W jednym z nich jest ciepła wódka, w drugim ciepła woda.</li>
+            <li>Osoba pijąca musi zwieść drużynę przeciwną.</li>
+            <li>Jeżeli uda się oszukać przeciwną drużynę, jej drużyna dostaje 10 pkt, a drużyna przeciwna wypija drugi kieliszek.</li>
+            <li>Jeżeli przeciwnicy poprawnie zgadną, oni dostają 10 pkt.</li>
+          </ol>
         </div>
       `;
-    case 2:
+    case "music":
+      return `
+        <div class="music-stage">
+          <div class="round-intro">
+            <div class="round-chip">Muzyczna intermisja ${round.ordinal}</div>
+            <h3>Kącik muzyczny</h3>
+            <p class="muted-copy">Słuchaj uważnie i zgarnij punkty dla swojej drużyny!</p>
+          </div>
+          <div class="music-light-row">
+            <span class="stage-light light-a"></span>
+            <span class="stage-light light-b"></span>
+            <span class="stage-light light-c"></span>
+            <span class="stage-light light-d"></span>
+          </div>
+          <div class="equalizer">
+            <span class="equalizer-bar" style="height:72px"></span>
+            <span class="equalizer-bar" style="height:44px"></span>
+            <span class="equalizer-bar" style="height:88px"></span>
+            <span class="equalizer-bar" style="height:50px"></span>
+            <span class="equalizer-bar" style="height:96px"></span>
+            <span class="equalizer-bar" style="height:62px"></span>
+            <span class="equalizer-bar" style="height:78px"></span>
+            <span class="equalizer-bar" style="height:54px"></span>
+          </div>
+          <div class="music-notes">
+            <span>♪</span><span>♫</span><span>♬</span><span>♩</span>
+          </div>
+        </div>
+      `;
+    case "quantity":
       return `
         <div class="stage-stack">
           <article class="feature-card">
-            <div class="game-meta-bar">
-              <span class="inline-pill">3 pytania</span>
-              <span class="inline-pill">60 sekund</span>
-            </div>
+            <div class="round-chip">3 pytania • 60 sekund</div>
             <h3>Ilość nie jakość</h3>
             <ol class="rules-list">
               <li>Zespoły na zmianę licytują się, kto jest w stanie wymienić więcej odpowiedzi dla danego pytania.</li>
@@ -309,23 +324,21 @@ function getGameStageMarkup(gameNumber) {
           </article>
 
           <div class="stage-grid two-columns">
-            <article class="feature-card" data-timer-widget="game2">
+            <article class="feature-card" data-timer-widget="game-2">
               <h3>Stoper rundy</h3>
               <div class="timer-display" data-timer-display>01:00</div>
-              <div class="timer-controls">
+              <div class="quick-actions">
                 <button class="primary-button" type="button" data-timer-start>Start</button>
                 <button class="ghost-button" type="button" data-timer-pause>Pauza</button>
                 <button class="ghost-button" type="button" data-timer-reset>Reset</button>
               </div>
             </article>
 
-            <article class="feature-card">
-              <div class="game-meta-bar">
-                <span class="question-counter" data-game2-counter>Pytanie 1 z 3</span>
-              </div>
+            <article class="feature-card question-board">
+              <div class="round-chip" data-game2-counter>Pytanie 1 z 3</div>
               <h3 data-game2-question>Ładowanie pytania...</h3>
               <div class="answers-grid" data-game2-answers></div>
-              <div class="mini-action-row">
+              <div class="quick-actions">
                 <button class="ghost-button" type="button" data-game2-reset>Resetuj pytanie</button>
                 <button class="secondary-button" type="button" data-game2-next>Następne pytanie</button>
               </div>
@@ -333,34 +346,44 @@ function getGameStageMarkup(gameNumber) {
           </div>
         </div>
       `;
-    case 3:
+    case "acting":
       return `
-        <div class="stage-stack">
-          <article class="feature-card">
-            <div class="game-meta-bar">
-              <span class="inline-pill">Interaktywne koło</span>
-              <span class="inline-pill">Wyniki dodatnie i ujemne</span>
+        <div class="acting-stage">
+          <div class="round-intro">
+            <div class="round-chip">Scenka ${round.ordinal}</div>
+            <h3>Odegraj postać</h3>
+            <p class="muted-copy">Prowadzący wybiera drużynę, która najlepiej odegra wskazaną postać.</p>
+          </div>
+          <div class="curtain-frame">
+            <div class="acting-stage-floor">
+              <div class="acting-masks">
+                <span>🎭</span><span>🎬</span><span>🎭</span>
+              </div>
             </div>
-            <h3>Koło fortuny</h3>
-            <ol class="rules-list">
-              <li>Na kole są pola punktowe dodatnie, ujemne oraz zdarzenia specjalne.</li>
-              <li>Każda drużyna musi minimum raz zakręcić kołem.</li>
-              <li>Po pierwszym razie może zdecydować, czy chce kontynuować.</li>
-              <li>Maksymalnie można zakręcić kołem 4 razy, chyba że wypadnie bankrut.</li>
-            </ol>
-          </article>
-
-          ${createWheelMarkup("game3Wheel", "Wynik koła")}
+          </div>
         </div>
       `;
-    case 4:
+    case "wheel":
       return `
         <div class="stage-stack">
           <article class="feature-card">
-            <div class="game-meta-bar">
-              <span class="inline-pill">Na żywo</span>
-              <span class="inline-pill">60 sekund</span>
-            </div>
+            <div class="round-chip">Koło fortuny na żywo</div>
+            <h3>Koło fortuny</h3>
+            <ol class="rules-list">
+              <li>Na kole znajdują się pola dodatnie, ujemne i specjalne.</li>
+              <li>Każda drużyna musi minimum raz zakręcić kołem.</li>
+              <li>Po pierwszym razie może zdecydować, czy chce kontynuować.</li>
+              <li>Maksymalnie można kręcić 4 razy, chyba że wypadnie bankrut.</li>
+            </ol>
+          </article>
+          ${createWheelMarkup("game-3")}
+        </div>
+      `;
+    case "charades":
+      return `
+        <div class="stage-stack">
+          <article class="feature-card">
+            <div class="round-chip">Na żywo • 60 sekund</div>
             <h3>Kalambury</h3>
             <ol class="rules-list">
               <li>Zwykłe kalambury.</li>
@@ -373,43 +396,26 @@ function getGameStageMarkup(gameNumber) {
             </ol>
           </article>
 
-          <div class="stage-grid two-columns">
-            <article class="feature-card" data-timer-widget="game4">
-              <h3>Timer rundy</h3>
-              <div class="timer-display" data-timer-display>01:00</div>
-              <div class="timer-controls">
-                <button class="primary-button" type="button" data-timer-start>Start</button>
-                <button class="ghost-button" type="button" data-timer-pause>Pauza</button>
-                <button class="ghost-button" type="button" data-timer-reset>Reset</button>
-              </div>
-            </article>
-
-            <article class="feature-card placeholder-stage">
-              <div>
-                <h3>Przestrzeń dla prowadzącego</h3>
-                <p>
-                  Tutaj masz prosty ekran wspierający kalambury na żywo. Wynik wpisujesz ręcznie
-                  po zakończeniu rundy.
-                </p>
-              </div>
-            </article>
-          </div>
+          <article class="feature-card" data-timer-widget="game-4">
+            <h3>Timer rundy</h3>
+            <div class="timer-display" data-timer-display>01:00</div>
+            <div class="quick-actions">
+              <button class="primary-button" type="button" data-timer-start>Start</button>
+              <button class="ghost-button" type="button" data-timer-pause>Pauza</button>
+              <button class="ghost-button" type="button" data-timer-reset>Reset</button>
+            </div>
+          </article>
         </div>
       `;
-    case 5:
+    case "hangman":
       return `
         <div class="stage-stack">
-          ${createWheelMarkup("game5Wheel", "Stawka rundy")}
+          ${createWheelMarkup("game-5")}
 
           <article class="feature-card phrase-panel">
-            <div class="game-meta-bar">
-              <span class="question-counter" data-game5-counter>Hasło 1 z 3</span>
-              <span class="inline-pill" data-game5-round-value>Aktualna stawka: 0 pkt</span>
-            </div>
-            <div>
-              <p class="phrase-category" data-game5-category>Kategoria</p>
-              <h3 data-game5-title>Wisielec</h3>
-            </div>
+            <div class="round-chip" data-game5-counter>Hasło 1 z 3</div>
+            <p class="muted-copy" data-game5-category>Kategoria</p>
+            <div class="inline-pill" data-game5-round-value>Aktualna stawka: 0 pkt</div>
             <div class="masked-phrase" data-game5-phrase></div>
 
             <div class="stage-grid two-columns">
@@ -435,32 +441,26 @@ function getGameStageMarkup(gameNumber) {
                 <h4>Trafione litery</h4>
                 <div class="letters-grid" data-game5-hit-letters></div>
               </article>
-
               <article class="feature-card">
                 <h4>Nietrafione litery</h4>
                 <div class="letters-grid" data-game5-missed-letters></div>
               </article>
             </div>
 
-            <div class="message-box" data-game5-message>
-              Zakręć kołem i zacznij zgadywać litery.
-            </div>
+            <div class="message-box" data-game5-message>Zakręć kołem i zacznij zgadywać litery.</div>
 
-            <div class="mini-action-row">
+            <div class="quick-actions">
               <button class="ghost-button" type="button" data-game5-reset-letters>Resetuj litery</button>
               <button class="secondary-button" type="button" data-game5-next-phrase>Następne hasło</button>
             </div>
           </article>
         </div>
       `;
-    case 6:
+    case "famous-person":
       return `
-        <div class="stage-stack">
+        <div class="support-stage">
           <article class="feature-card">
-            <div class="game-meta-bar">
-              <span class="inline-pill">Start: 20 pkt</span>
-              <span class="inline-pill">Błędne odgadnięcie: -2 pkt</span>
-            </div>
+            <div class="round-chip">Start: 20 pkt</div>
             <h3>Znana postać</h3>
             <ol class="rules-list">
               <li>Każda osoba z drużyny może zadawać pytanie po kolei, a przeciwnicy odpowiadają tylko: tak albo nie.</li>
@@ -475,12 +475,12 @@ function getGameStageMarkup(gameNumber) {
             <article class="support-tile">
               <h3>Aktualny wynik rundy</h3>
               <div class="score-display" data-game6-score>20</div>
-              <p>Ten wynik możesz potem ręcznie wpisać po odpowiedniej stronie w karcie punktacji.</p>
+              <p>Ten wynik możesz wpisać ręcznie do punktacji odpowiedniej drużyny.</p>
             </article>
 
             <article class="support-tile">
               <h3>Szybkie akcje</h3>
-              <div class="support-actions">
+              <div class="quick-actions">
                 <button class="secondary-button" type="button" data-game6-minus-question>Odejmij 1 pkt</button>
                 <button class="danger-button" type="button" data-game6-minus-wrong>Odejmij 2 pkt</button>
                 <button class="ghost-button" type="button" data-game6-reset>Reset do 20</button>
@@ -501,105 +501,96 @@ function getGameStageMarkup(gameNumber) {
         </div>
       `;
     default:
-      return `
-        <div class="stage-stack">
-          <article class="feature-card">
-            <div class="game-meta-bar">
-              <span class="inline-pill">Placeholder</span>
-              <span class="inline-pill">Gotowe do rozbudowy</span>
-            </div>
-            <h3>Gra 7</h3>
-            <p class="muted-copy">
-              Ten ekran pozostaje czystym placeholderem pod kolejną grę. Architektura pozwala
-              dodać tu nową mechanikę bez zmiany reszty aplikacji.
-            </p>
-          </article>
-
-          <article class="feature-card placeholder-stage">
-            <div>
-              <h3>Scena przyszłej rundy</h3>
-              <p>Dodaj tutaj kolejne zasady, quiz albo interaktywną mechanikę w następnej iteracji.</p>
-            </div>
-          </article>
-        </div>
-      `;
+      return "";
   }
 }
 
-function createWheelMarkup(wheelId, resultLabel) {
+function createWheelMarkup(roundId) {
   return `
-    <div class="wheel-layout">
-      <article class="feature-card wheel-visual" data-wheel-widget="${wheelId}">
-        <div class="wheel-wrapper">
+    <div class="wheel-stage">
+      <article class="feature-card wheel-board" data-wheel-widget="${roundId}">
+        <div class="wheel-shell">
+          <div class="wheel-glow"></div>
           <div class="wheel-pointer"></div>
-          <div class="wheel-disc" data-wheel-disc></div>
+          <div class="wheel-rotor" data-wheel-rotor>
+            <div class="wheel-face" data-wheel-face></div>
+            <div class="wheel-label-layer" data-wheel-labels></div>
+          </div>
           <div class="wheel-center-cap">SPIN</div>
         </div>
-        <button class="primary-button" type="button" data-wheel-spin>Zakręć kołem</button>
+        <button class="primary-button pulse-button" type="button" data-wheel-spin>Zakręć kołem</button>
         <div class="wheel-legend" data-wheel-legend></div>
       </article>
 
-      <article class="feature-card wheel-result-box">
-        <span class="inline-pill">${resultLabel}</span>
+      <article class="feature-card wheel-result-card">
+        <div class="round-chip">Wynik losowania</div>
         <div class="wheel-result-value" data-wheel-result>Jeszcze nie zakręcono</div>
-        <p class="wheel-result-note" data-wheel-note>
-          Koło może zwrócić punkty dodatnie, ujemne albo efekt specjalny.
-        </p>
+        <p class="wheel-result-note" data-wheel-note>Koło pokazuje wynik punktowy lub pole specjalne.</p>
       </article>
     </div>
   `;
 }
 
-function setupGameSection(gameNumber) {
-  const section = document.getElementById(`game-${gameNumber}`);
+function bindRoundBaseActions(section, round, index) {
+  const form = section.querySelector(`[data-score-form="${round.id}"]`);
+  const nextButton = section.querySelector(`[data-next-round="${round.id}"]`);
 
-  if (!section) {
-    return;
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    await saveRoundScore(round.id, { showSuccessToast: true });
+  });
+
+  nextButton.addEventListener("click", async () => {
+    const saved = await saveRoundScore(round.id, { showSuccessToast: false });
+
+    if (!saved) {
+      return;
+    }
+
+    const nextViewId = index === ROUND_CONFIG.length - 1 ? "final-score" : ROUND_CONFIG[index + 1].id;
+    showView(nextViewId);
+    showToast(`Zapisano rundę: ${round.summaryLabel}.`, "success");
+  });
+}
+
+function setupRoundFeatures(section, round) {
+  if (round.id === "game-2") {
+    setupTimerWidget(section.querySelector('[data-timer-widget="game-2"]'), "timer-game-2", DEFAULT_TIMER_SECONDS);
+    bindGame2(section);
+    renderGame2Question();
   }
 
-  switch (gameNumber) {
-    case 2:
-      setupTimerWidget(section.querySelector('[data-timer-widget="game2"]'), "game2", DEFAULT_TIMER_SECONDS);
-      bindGame2(section);
-      renderGame2Question();
-      break;
-    case 3:
-      initializeWheelWidget(section.querySelector('[data-wheel-widget="game3Wheel"]'), "game3Wheel", handleGame3WheelResult);
-      break;
-    case 4:
-      setupTimerWidget(section.querySelector('[data-timer-widget="game4"]'), "game4", DEFAULT_TIMER_SECONDS);
-      break;
-    case 5:
-      initializeWheelWidget(section.querySelector('[data-wheel-widget="game5Wheel"]'), "game5Wheel", handleGame5WheelResult);
-      bindGame5(section);
-      renderGame5();
-      break;
-    case 6:
-      bindGame6(section);
-      updateGame6Display();
-      break;
-    default:
-      break;
+  if (round.id === "game-3") {
+    initializeWheel(section.querySelector('[data-wheel-widget="game-3"]'), "wheel-game-3", handleGame3WheelResult);
+  }
+
+  if (round.id === "game-4") {
+    setupTimerWidget(section.querySelector('[data-timer-widget="game-4"]'), "timer-game-4", DEFAULT_TIMER_SECONDS);
+  }
+
+  if (round.id === "game-5") {
+    initializeWheel(section.querySelector('[data-wheel-widget="game-5"]'), "wheel-game-5", handleGame5WheelResult);
+    bindGame5(section);
+    renderGame5();
+  }
+
+  if (round.id === "game-6") {
+    bindGame6(section);
+    updateGame6Display();
   }
 }
 
-function populateFormsFromStorage() {
-  const team1Field = document.getElementById("team1Name");
-  const team2Field = document.getElementById("team2Name");
-
-  team1Field.value = state.teams.team1Name === DEFAULT_TEAMS.team1Name ? "" : state.teams.team1Name;
-  team2Field.value = state.teams.team2Name === DEFAULT_TEAMS.team2Name ? "" : state.teams.team2Name;
+function populateWelcomeForm() {
+  document.getElementById("team1Name").value = state.teams.team1Name === DEFAULT_TEAMS.team1Name ? "" : state.teams.team1Name;
+  document.getElementById("team2Name").value = state.teams.team2Name === DEFAULT_TEAMS.team2Name ? "" : state.teams.team2Name;
 }
 
 function bindWelcomeForm() {
-  const welcomeForm = document.getElementById("welcomeForm");
-
-  welcomeForm.addEventListener("submit", async (event) => {
+  document.getElementById("welcomeForm").addEventListener("submit", async (event) => {
     event.preventDefault();
-
-    const formData = new FormData(welcomeForm);
-    const team1Name = sanitizeTeamName(formData.get("team1Name"));
-    const team2Name = sanitizeTeamName(formData.get("team2Name"));
+    const formData = new FormData(event.currentTarget);
+    const team1Name = sanitizeText(formData.get("team1Name"));
+    const team2Name = sanitizeText(formData.get("team2Name"));
 
     if (!team1Name || !team2Name) {
       showToast("Wpisz nazwy obu drużyn.", "error");
@@ -610,11 +601,20 @@ function bindWelcomeForm() {
     saveLocalStorage(STORAGE_KEYS.teams, state.teams);
     refreshTeamNames();
 
-    const initialized = await sendInitializationToSheets();
+    const initialized = await postToAppsScript({
+      action: "initializeTeams",
+      team1Name,
+      team2Name,
+      rounds: ROUND_CONFIG.map((round, index) => ({
+        roundIndex: index + 1,
+        roundId: round.id,
+        roundLabel: round.summaryLabel
+      }))
+    });
 
     if (initialized) {
-      showToast("Drużyny zapisane. Zaczynamy od pierwszej gry.", "success");
-      showView("game-1");
+      showToast("Drużyny zapisane. Ruszamy z pierwszą rundą.", "success");
+      showView(ROUND_CONFIG[0].id);
     }
   });
 }
@@ -632,17 +632,15 @@ function bindMenuToggle() {
   const mainNav = document.getElementById("mainNav");
 
   menuToggle.addEventListener("click", () => {
-    const isExpanded = menuToggle.getAttribute("aria-expanded") === "true";
-    menuToggle.setAttribute("aria-expanded", String(!isExpanded));
+    const expanded = menuToggle.getAttribute("aria-expanded") === "true";
+    menuToggle.setAttribute("aria-expanded", String(!expanded));
     mainNav.classList.toggle("is-open");
     document.body.classList.toggle("menu-open");
   });
 }
 
 function bindResetButton() {
-  const resetButton = document.getElementById("resetSessionButton");
-
-  resetButton.addEventListener("click", () => {
+  document.getElementById("resetSessionButton").addEventListener("click", () => {
     const confirmed = window.confirm(
       "Czy na pewno zakończyć grę? Wszystkie lokalne nazwy drużyn i zapisane wyniki zostaną usunięte."
     );
@@ -656,10 +654,9 @@ function bindResetButton() {
 
     clearAllTimers();
     Object.assign(state, createInitialState());
-
-    renderGameViews();
-    populateFormsFromStorage();
-    hydrateScoreInputs();
+    renderRounds();
+    populateWelcomeForm();
+    hydrateRoundScoreInputs();
     refreshTeamNames();
     renderFinalScoreboard();
     showView("welcome");
@@ -667,16 +664,15 @@ function bindResetButton() {
   });
 }
 
-function hydrateScoreInputs() {
-  state.scores.forEach((score) => {
-    const section = document.getElementById(`game-${score.game}`);
-
+function hydrateRoundScoreInputs() {
+  ROUND_CONFIG.forEach((round) => {
+    const section = document.getElementById(round.id);
     if (!section) {
       return;
     }
 
-    section.querySelector(".team1-score-input").value = score.team1Score;
-    section.querySelector(".team2-score-input").value = score.team2Score;
+    section.querySelector(".team1-score-input").value = state.scores[round.id].team1Score;
+    section.querySelector(".team2-score-input").value = state.scores[round.id].team2Score;
   });
 }
 
@@ -698,8 +694,8 @@ function showView(viewId) {
     view.classList.toggle("is-active", view.id === viewId);
   });
 
-  document.querySelectorAll(".nav-tab").forEach((tab) => {
-    tab.classList.toggle("is-active", tab.dataset.target === viewId);
+  document.querySelectorAll(".nav-tab").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.target === viewId);
   });
 
   closeMobileMenu();
@@ -712,70 +708,53 @@ function showView(viewId) {
 }
 
 function closeMobileMenu() {
-  const menuToggle = document.getElementById("menuToggle");
-  const mainNav = document.getElementById("mainNav");
-
-  menuToggle.setAttribute("aria-expanded", "false");
-  mainNav.classList.remove("is-open");
+  document.getElementById("menuToggle").setAttribute("aria-expanded", "false");
+  document.getElementById("mainNav").classList.remove("is-open");
   document.body.classList.remove("menu-open");
 }
 
-async function saveGameScore(gameNumber, options = {}) {
-  const section = document.getElementById(`game-${gameNumber}`);
+async function saveRoundScore(roundId, options = {}) {
+  const section = document.getElementById(roundId);
   const team1Score = Number(section.querySelector(".team1-score-input").value);
   const team2Score = Number(section.querySelector(".team2-score-input").value);
+  const roundIndex = getRoundIndex(roundId) + 1;
+  const round = getRoundById(roundId);
 
   if (!Number.isInteger(team1Score) || !Number.isInteger(team2Score)) {
-    showToast("Wyniki muszą być liczbami całkowitymi. Mogą być również ujemne.", "error");
+    showToast("Wyniki muszą być liczbami całkowitymi. Mogą być także ujemne.", "error");
     return false;
   }
 
-  state.scores[gameNumber - 1] = {
-    game: gameNumber,
-    team1Score,
-    team2Score
-  };
-
+  state.scores[roundId] = { team1Score, team2Score };
   saveLocalStorage(STORAGE_KEYS.scores, state.scores);
 
-  const payload = {
+  const saved = await postToAppsScript({
     action: "saveScore",
-    game: gameNumber,
+    roundIndex,
+    roundId,
+    roundLabel: round.summaryLabel,
     team1Name: state.teams.team1Name,
     team2Name: state.teams.team2Name,
     team1Score,
     team2Score
-  };
+  });
 
-  const sent = await postToAppsScript(payload);
-
-  if (!sent) {
+  if (!saved) {
     return false;
   }
 
   renderFinalScoreboard();
 
   if (options.showSuccessToast) {
-    showToast(`Wynik gry ${gameNumber} został zapisany.`, "success");
+    showToast(`Zapisano: ${round.summaryLabel}.`, "success");
   }
 
   return true;
 }
 
-async function sendInitializationToSheets() {
-  const payload = {
-    action: "initializeTeams",
-    team1Name: state.teams.team1Name,
-    team2Name: state.teams.team2Name,
-    scores: state.scores
-  };
-
-  return postToAppsScript(payload);
-}
-
 async function postToAppsScript(payload) {
   if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL.includes("PASTE_YOUR")) {
-    showToast("Adres Apps Script nie jest jeszcze ustawiony. Zapis lokalny działa.", "error");
+    showToast("Adres Apps Script nie jest ustawiony. Zapis lokalny działa.", "error");
     return true;
   }
 
@@ -811,44 +790,48 @@ function renderFinalScoreboard() {
   const scoreboardBody = document.getElementById("scoreboardBody");
   const winnerCard = document.getElementById("winnerCard");
   const winnerHeadline = document.getElementById("winnerHeadline");
+  const winnerRevealName = document.getElementById("winnerRevealName");
   const winnerMessage = document.getElementById("winnerMessage");
 
   scoreboardBody.innerHTML = "";
 
-  let totalTeam1 = 0;
-  let totalTeam2 = 0;
+  let team1Total = 0;
+  let team2Total = 0;
 
-  state.scores.forEach((score) => {
-    totalTeam1 += score.team1Score;
-    totalTeam2 += score.team2Score;
+  ROUND_CONFIG.forEach((round) => {
+    const scores = state.scores[round.id];
+    team1Total += scores.team1Score;
+    team2Total += scores.team2Score;
 
     const row = document.createElement("tr");
     row.innerHTML = `
-      <td>${GAME_TITLES[score.game - 1]}</td>
-      <td>${formatSignedNumber(score.team1Score)}</td>
-      <td>${formatSignedNumber(score.team2Score)}</td>
+      <td>${round.summaryLabel}</td>
+      <td>${formatSigned(scores.team1Score)}</td>
+      <td>${formatSigned(scores.team2Score)}</td>
     `;
     scoreboardBody.appendChild(row);
   });
 
-  document.getElementById("team1Total").textContent = formatSignedNumber(totalTeam1);
-  document.getElementById("team2Total").textContent = formatSignedNumber(totalTeam2);
+  document.getElementById("team1Total").textContent = formatSigned(team1Total);
+  document.getElementById("team2Total").textContent = formatSigned(team2Total);
 
-  winnerCard.className = "glass-card winner-card";
-  winnerCard.classList.add("is-celebrating");
+  winnerCard.className = "glass-card winner-card is-celebrating";
 
-  if (totalTeam1 > totalTeam2) {
-    winnerCard.classList.add("is-winner-team-1");
-    winnerHeadline.textContent = `${state.teams.team1Name} wygrywa!`;
-    winnerMessage.textContent = `${state.teams.team1Name} kończy wieczór z wynikiem ${formatSignedNumber(totalTeam1)} i wyprzedza ${state.teams.team2Name}.`;
-  } else if (totalTeam2 > totalTeam1) {
-    winnerCard.classList.add("is-winner-team-2");
-    winnerHeadline.textContent = `${state.teams.team2Name} wygrywa!`;
-    winnerMessage.textContent = `${state.teams.team2Name} kończy wieczór z wynikiem ${formatSignedNumber(totalTeam2)} i wyprzedza ${state.teams.team1Name}.`;
+  if (team1Total > team2Total) {
+    winnerCard.classList.add("is-team-1");
+    winnerHeadline.textContent = "WYGRYWA...";
+    winnerRevealName.textContent = state.teams.team1Name;
+    winnerMessage.textContent = `${state.teams.team1Name} kończy wieczór z wynikiem ${formatSigned(team1Total)} i wyprzedza ${state.teams.team2Name}.`;
+  } else if (team2Total > team1Total) {
+    winnerCard.classList.add("is-team-2");
+    winnerHeadline.textContent = "WYGRYWA...";
+    winnerRevealName.textContent = state.teams.team2Name;
+    winnerMessage.textContent = `${state.teams.team2Name} kończy wieczór z wynikiem ${formatSigned(team2Total)} i wyprzedza ${state.teams.team1Name}.`;
   } else {
-    winnerCard.classList.add("is-tie");
-    winnerHeadline.textContent = "Remis!";
-    winnerMessage.textContent = `Obie drużyny kończą z identycznym wynikiem ${formatSignedNumber(totalTeam1)}.`;
+    winnerCard.classList.add("is-draw");
+    winnerHeadline.textContent = "REMIS!";
+    winnerRevealName.textContent = "Obie drużyny";
+    winnerMessage.textContent = `Obie drużyny kończą wieczór z identycznym wynikiem ${formatSigned(team1Total)}.`;
   }
 }
 
@@ -862,17 +845,16 @@ function bindGame2(section) {
   section.querySelector("[data-game2-next]").addEventListener("click", () => {
     if (state.game2.currentQuestion < GAME_2_QUESTIONS.length - 1) {
       state.game2.currentQuestion += 1;
-      resetTimer("game2");
+      resetTimer("timer-game-2");
       renderGame2Question();
     } else {
-      showToast("To było ostatnie pytanie w tej grze.", "success");
+      showToast("To było ostatnie pytanie w tej rundzie.", "success");
     }
   });
 }
 
 function renderGame2Question() {
   const section = document.getElementById("game-2");
-
   if (!section) {
     return;
   }
@@ -887,14 +869,12 @@ function renderGame2Question() {
   answersContainer.innerHTML = "";
 
   question.answers.forEach((answer, index) => {
-    const isRevealed = state.game2.revealedAnswers[questionIndex][index];
     const tile = document.createElement("button");
-
     tile.type = "button";
-    tile.className = `answer-tile ${isRevealed ? "is-revealed" : "is-hidden"}`;
-    tile.innerHTML = isRevealed
+    tile.className = `reveal-tile ${state.game2.revealedAnswers[questionIndex][index] ? "is-revealed" : ""}`;
+    tile.innerHTML = state.game2.revealedAnswers[questionIndex][index]
       ? `<span>${answer}</span>`
-      : `<span class="answer-index">${index + 1}</span>`;
+      : `<span class="reveal-index">${index + 1}</span>`;
 
     tile.addEventListener("click", () => {
       state.game2.revealedAnswers[questionIndex][index] = !state.game2.revealedAnswers[questionIndex][index];
@@ -912,44 +892,33 @@ function setupTimerWidget(widget, timerKey, durationSeconds) {
     return;
   }
 
-  if (!state.ui.timers[timerKey]) {
-    state.ui.timers[timerKey] = {
-      duration: durationSeconds,
-      remaining: durationSeconds,
-      intervalId: null
-    };
-  }
+  state.ui.timers[timerKey] = {
+    duration: durationSeconds,
+    remaining: durationSeconds,
+    intervalId: null,
+    display: widget.querySelector("[data-timer-display]")
+  };
 
-  const display = widget.querySelector("[data-timer-display]");
-  const startButton = widget.querySelector("[data-timer-start]");
-  const pauseButton = widget.querySelector("[data-timer-pause]");
-  const resetButton = widget.querySelector("[data-timer-reset]");
-
-  startButton.addEventListener("click", () => startTimer(timerKey, display));
-  pauseButton.addEventListener("click", () => pauseTimer(timerKey));
-  resetButton.addEventListener("click", () => {
-    resetTimer(timerKey);
-    updateTimerDisplay(timerKey, display);
-  });
-
-  updateTimerDisplay(timerKey, display);
+  widget.querySelector("[data-timer-start]").addEventListener("click", () => startTimer(timerKey));
+  widget.querySelector("[data-timer-pause]").addEventListener("click", () => pauseTimer(timerKey));
+  widget.querySelector("[data-timer-reset]").addEventListener("click", () => resetTimer(timerKey));
+  updateTimerDisplay(timerKey);
 }
 
-function startTimer(timerKey, displayElement) {
+function startTimer(timerKey) {
   const timer = state.ui.timers[timerKey];
-
   if (!timer || timer.intervalId) {
     return;
   }
 
   timer.intervalId = window.setInterval(() => {
     timer.remaining -= 1;
-    updateTimerDisplay(timerKey, displayElement);
+    updateTimerDisplay(timerKey);
 
     if (timer.remaining <= 0) {
-      pauseTimer(timerKey);
       timer.remaining = 0;
-      updateTimerDisplay(timerKey, displayElement);
+      pauseTimer(timerKey);
+      updateTimerDisplay(timerKey);
       showToast("Czas minął.", "error");
     }
   }, 1000);
@@ -957,7 +926,6 @@ function startTimer(timerKey, displayElement) {
 
 function pauseTimer(timerKey) {
   const timer = state.ui.timers[timerKey];
-
   if (!timer?.intervalId) {
     return;
   }
@@ -968,25 +936,24 @@ function pauseTimer(timerKey) {
 
 function resetTimer(timerKey) {
   const timer = state.ui.timers[timerKey];
-
   if (!timer) {
     return;
   }
 
   pauseTimer(timerKey);
   timer.remaining = timer.duration;
+  updateTimerDisplay(timerKey);
 }
 
-function updateTimerDisplay(timerKey, displayElement) {
+function updateTimerDisplay(timerKey) {
   const timer = state.ui.timers[timerKey];
-
-  if (!timer || !displayElement) {
+  if (!timer) {
     return;
   }
 
   const minutes = String(Math.floor(timer.remaining / 60)).padStart(2, "0");
   const seconds = String(timer.remaining % 60).padStart(2, "0");
-  displayElement.textContent = `${minutes}:${seconds}`;
+  timer.display.textContent = `${minutes}:${seconds}`;
 }
 
 function clearAllTimers() {
@@ -997,18 +964,22 @@ function clearAllTimers() {
   });
 }
 
-function initializeWheelWidget(widget, wheelKey, onResult) {
+function initializeWheel(widget, wheelKey, onResult) {
   if (!widget) {
     return;
   }
 
-  const disc = widget.querySelector("[data-wheel-disc]");
+  const rotor = widget.querySelector("[data-wheel-rotor]");
+  const face = widget.querySelector("[data-wheel-face]");
+  const labelsLayer = widget.querySelector("[data-wheel-labels]");
   const legend = widget.querySelector("[data-wheel-legend]");
-  const resultValue = widget.parentElement.querySelector("[data-wheel-result]");
-  const resultNote = widget.parentElement.querySelector("[data-wheel-note]");
+  const resultCard = widget.parentElement.querySelector(".wheel-result-card");
+  const resultValue = resultCard.querySelector("[data-wheel-result]");
+  const resultNote = resultCard.querySelector("[data-wheel-note]");
   const spinButton = widget.querySelector("[data-wheel-spin]");
 
-  disc.style.background = buildWheelGradient();
+  face.style.background = buildWheelGradient();
+  labelsLayer.innerHTML = buildWheelLabelsMarkup();
   legend.innerHTML = WHEEL_SEGMENTS.map((segment) => `
     <span class="legend-chip">
       <span class="legend-chip-swatch" style="background:${segment.color}"></span>
@@ -1017,156 +988,221 @@ function initializeWheelWidget(widget, wheelKey, onResult) {
   `).join("");
 
   state.ui.wheels[wheelKey] = {
-    rotation: 0,
-    spinning: false,
-    disc,
+    rotor,
     resultValue,
     resultNote,
-    spinButton
+    spinButton,
+    rotation: 0,
+    spinning: false
   };
 
   spinButton.addEventListener("click", () => spinWheel(wheelKey, onResult));
 }
 
 function buildWheelGradient() {
-  const segmentSize = 360 / WHEEL_SEGMENTS.length;
-  const stops = WHEEL_SEGMENTS.map((segment, index) => {
-    const start = index * segmentSize;
-    const end = (index + 1) * segmentSize;
+  const angle = 360 / WHEEL_SEGMENTS.length;
+  return `conic-gradient(${WHEEL_SEGMENTS.map((segment, index) => {
+    const start = index * angle;
+    const end = (index + 1) * angle;
     return `${segment.color} ${start}deg ${end}deg`;
-  });
+  }).join(",")})`;
+}
 
-  return `conic-gradient(${stops.join(",")})`;
+function buildWheelLabelsMarkup() {
+  const angle = 360 / WHEEL_SEGMENTS.length;
+  const radius = 35;
+
+  return WHEEL_SEGMENTS.map((segment, index) => {
+    const midAngle = (index * angle) + (angle / 2) - 90;
+    const radians = (midAngle * Math.PI) / 180;
+    const x = 50 + (radius * Math.cos(radians));
+    const y = 50 + (radius * Math.sin(radians));
+    return `
+      <div class="wheel-label" style="left:${x}%;top:${y}%;transform:translate(-50%, -50%) rotate(${midAngle + 90}deg);">
+        <span style="transform:rotate(${-midAngle - 90}deg);background:rgba(0,0,0,0.16);">${segment.label}</span>
+      </div>
+    `;
+  }).join("");
 }
 
 function spinWheel(wheelKey, onResult) {
-  const wheelState = state.ui.wheels[wheelKey];
-
-  if (!wheelState || wheelState.spinning) {
+  const wheel = state.ui.wheels[wheelKey];
+  if (!wheel || wheel.spinning) {
     return;
   }
 
   const segmentIndex = Math.floor(Math.random() * WHEEL_SEGMENTS.length);
   const segment = WHEEL_SEGMENTS[segmentIndex];
-  const anglePerSegment = 360 / WHEEL_SEGMENTS.length;
-  const currentRotation = wheelState.rotation;
-  const targetAngle = (360 - ((segmentIndex * anglePerSegment) + (anglePerSegment / 2))) % 360;
-  const normalizedCurrent = currentRotation % 360;
-  const additionalRotation = ((targetAngle - normalizedCurrent) + 360) % 360;
-  const overshootRotation = currentRotation + (6 * 360) + additionalRotation + 12;
-  const finalRotation = overshootRotation - 12;
+  const segmentAngle = 360 / WHEEL_SEGMENTS.length;
+  const targetAngle = 360 - ((segmentIndex * segmentAngle) + (segmentAngle / 2));
+  const normalizedCurrent = ((wheel.rotation % 360) + 360) % 360;
+  const delta = ((targetAngle - normalizedCurrent) + 360) % 360;
+  const overshoot = wheel.rotation + (8 * 360) + delta + 10;
+  const finalRotation = overshoot - 10;
 
-  wheelState.spinning = true;
-  wheelState.spinButton.disabled = true;
-  wheelState.resultValue.textContent = "Kręcimy...";
-  wheelState.resultNote.textContent = "Koło jeszcze się obraca.";
-
-  wheelState.disc.style.transition = "transform 4.6s cubic-bezier(0.12, 0.85, 0.08, 1)";
-  wheelState.disc.style.transform = `rotate(${overshootRotation}deg)`;
+  wheel.spinning = true;
+  wheel.spinButton.disabled = true;
+  wheel.resultValue.textContent = "Kręcimy...";
+  wheel.resultNote.textContent = "Koło wiruje i zaraz wskaże wynik.";
+  wheel.rotor.style.transition = "transform 6.3s cubic-bezier(0.08, 0.89, 0.18, 1)";
+  wheel.rotor.style.transform = `rotate(${overshoot}deg)`;
 
   window.setTimeout(() => {
-    wheelState.disc.style.transition = "transform 260ms ease-out";
-    wheelState.disc.style.transform = `rotate(${finalRotation}deg)`;
-  }, 4600);
+    wheel.rotor.style.transition = "transform 420ms ease-out";
+    wheel.rotor.style.transform = `rotate(${finalRotation}deg)`;
+  }, 6300);
 
   window.setTimeout(() => {
-    wheelState.rotation = finalRotation;
-    wheelState.spinning = false;
-    wheelState.spinButton.disabled = false;
-    onResult(segment, wheelState);
-  }, 4900);
+    wheel.rotation = finalRotation;
+    wheel.spinning = false;
+    wheel.spinButton.disabled = false;
+    onResult(segment, wheel);
+  }, 6740);
 }
 
-function handleGame3WheelResult(segment, wheelState) {
-  wheelState.resultValue.textContent = segment.label;
-  wheelState.resultNote.textContent = segment.kind === "score"
-    ? `Koło wskazało ${formatSignedNumber(segment.value)} pkt.`
+function handleGame3WheelResult(segment, wheel) {
+  wheel.resultValue.textContent = segment.label;
+  wheel.resultNote.textContent = segment.kind === "score"
+    ? `Koło wskazało ${formatSigned(segment.value)} pkt.`
     : `Wypadło pole specjalne: ${segment.label}.`;
 }
 
 function bindGame5(section) {
   section.querySelector("[data-game5-letter-form]").addEventListener("submit", (event) => {
     event.preventDefault();
-    handleGame5LetterGuess(section);
+    processGame5Letter(section);
   });
 
   section.querySelector("[data-game5-guess-form]").addEventListener("submit", (event) => {
     event.preventDefault();
-    handleGame5PhraseGuess(section);
-  });
-
-  section.querySelector("[data-game5-next-phrase]").addEventListener("click", () => {
-    if (state.game5.phraseIndex < GAME_5_PHRASES.length - 1) {
-      const nextIndex = state.game5.phraseIndex + 1;
-      state.game5 = createGame5State();
-      state.game5.phraseIndex = nextIndex;
-    } else {
-      showToast("To było ostatnie hasło w tej grze.", "success");
-      return;
-    }
-
-    renderGame5();
-    resetWheelResultBox("game5Wheel", "Jeszcze nie zakręcono", "Koło ustali stawkę rundy dla tego hasła.");
+    processGame5Phrase(section);
   });
 
   section.querySelector("[data-game5-reset-letters]").addEventListener("click", () => {
-    const phraseIndex = state.game5.phraseIndex;
-    state.game5 = createGame5State();
-    state.game5.phraseIndex = phraseIndex;
+    const currentPhraseIndex = state.game5.phraseIndex;
+    state.game5 = createInitialState().game5;
+    state.game5.phraseIndex = currentPhraseIndex;
     renderGame5();
-    resetWheelResultBox("game5Wheel", "Jeszcze nie zakręcono", "Koło ustali stawkę rundy dla tego hasła.");
+    resetWheelOutput("wheel-game-5");
+  });
+
+  section.querySelector("[data-game5-next-phrase]").addEventListener("click", () => {
+    if (state.game5.phraseIndex >= GAME_5_PHRASES.length - 1) {
+      showToast("To było ostatnie hasło w tej rundzie.", "success");
+      return;
+    }
+
+    state.game5 = createInitialState().game5;
+    state.game5.phraseIndex += 1;
+    renderGame5();
+    resetWheelOutput("wheel-game-5");
   });
 }
 
-function handleGame5WheelResult(segment, wheelState) {
+function handleGame5WheelResult(segment, wheel) {
   if (segment.kind === "score") {
     state.game5.roundValue = segment.value;
-    state.game5.statusMessage = `Stawka tej rundy to ${formatSignedNumber(segment.value)} pkt.`;
+    state.game5.statusMessage = `Aktualna stawka tej próby to ${formatSigned(segment.value)} pkt.`;
     state.game5.messageType = "";
-    wheelState.resultNote.textContent = "Jeśli drużyna odgadnie hasło, wpisz ten wynik do karty punktacji.";
+    wheel.resultNote.textContent = "Jeśli hasło zostanie odgadnięte, wpisz tę wartość do punktacji.";
   } else if (segment.kind === "bankrupt") {
     state.game5.roundValue = 0;
     state.game5.statusMessage = "Bankrut. Stawka rundy wraca do 0 pkt.";
     state.game5.messageType = "is-error";
-    wheelState.resultNote.textContent = "Bankrut kończy zbieranie punktów w tej odsłonie.";
+    wheel.resultNote.textContent = "Bankrut zeruje stawkę aktualnej próby.";
   } else {
-    state.game5.statusMessage = `Pole specjalne: ${segment.label}. Jeśli trzeba, wynik tej sytuacji wpisz ręcznie.`;
+    state.game5.statusMessage = `Pole specjalne: ${segment.label}. Efekt rozlicz ręcznie w punktacji.`;
     state.game5.messageType = "";
-    wheelState.resultNote.textContent = "Efekt specjalny nie ustawia automatycznie punktów.";
+    wheel.resultNote.textContent = "Pole specjalne nie ustawia punktów automatycznie.";
   }
 
-  wheelState.resultValue.textContent = segment.label;
+  wheel.resultValue.textContent = segment.label;
   renderGame5();
 }
 
 function renderGame5() {
   const section = document.getElementById("game-5");
-
   if (!section) {
     return;
   }
 
   const phraseData = GAME_5_PHRASES[state.game5.phraseIndex];
-  const messageBox = section.querySelector("[data-game5-message]");
-  const nextButton = section.querySelector("[data-game5-next-phrase]");
-
   section.querySelector("[data-game5-counter]").textContent = `Hasło ${state.game5.phraseIndex + 1} z ${GAME_5_PHRASES.length}`;
   section.querySelector("[data-game5-category]").textContent = `Kategoria: ${phraseData.category}`;
-  section.querySelector("[data-game5-round-value]").textContent = `Aktualna stawka: ${formatSignedNumber(state.game5.roundValue)} pkt`;
+  section.querySelector("[data-game5-round-value]").textContent = `Aktualna stawka: ${formatSigned(state.game5.roundValue)} pkt`;
+  section.querySelector("[data-game5-message]").textContent = state.game5.statusMessage;
+  section.querySelector("[data-game5-message]").className = `message-box ${state.game5.messageType}`.trim();
+  section.querySelector("[data-game5-next-phrase]").textContent = state.game5.phraseIndex === GAME_5_PHRASES.length - 1
+    ? "To już ostatnie hasło"
+    : "Następne hasło";
 
   renderMaskedPhrase(section.querySelector("[data-game5-phrase]"), phraseData.phrase);
-  renderLettersGrid(section.querySelector("[data-game5-hit-letters]"), state.game5.guessedLetters, false);
-  renderLettersGrid(section.querySelector("[data-game5-missed-letters]"), state.game5.missedLetters, true);
+  renderLetters(section.querySelector("[data-game5-hit-letters]"), state.game5.guessedLetters, false);
+  renderLetters(section.querySelector("[data-game5-missed-letters]"), state.game5.missedLetters, true);
+}
 
-  messageBox.textContent = state.game5.statusMessage;
-  messageBox.className = `message-box ${state.game5.messageType}`.trim();
+function processGame5Letter(section) {
+  const input = section.querySelector("[data-game5-letter-input]");
+  const value = sanitizeText(input.value);
 
-  nextButton.textContent = state.game5.phraseIndex === GAME_5_PHRASES.length - 1 ? "To już ostatnie hasło" : "Następne hasło";
+  if (!value || value.length !== 1 || !LETTER_PATTERN.test(value)) {
+    showToast("Wpisz jedną poprawną literę.", "error");
+    return;
+  }
+
+  const normalizedValue = normalizeLetter(value);
+  const phrase = GAME_5_PHRASES[state.game5.phraseIndex].phrase;
+  const normalizedPhraseLetters = Array.from(phrase).map((letter) => normalizeLetter(letter));
+
+  if (
+    state.game5.guessedLetters.some((letter) => normalizeLetter(letter) === normalizedValue) ||
+    state.game5.missedLetters.some((letter) => normalizeLetter(letter) === normalizedValue)
+  ) {
+    showToast("Ta litera była już użyta.", "error");
+    input.value = "";
+    return;
+  }
+
+  if (normalizedPhraseLetters.includes(normalizedValue)) {
+    state.game5.guessedLetters.push(value.toUpperCase());
+    state.game5.statusMessage = `Litera ${value.toUpperCase()} występuje w haśle.`;
+    state.game5.messageType = "is-success";
+  } else {
+    state.game5.missedLetters.push(value.toUpperCase());
+    state.game5.statusMessage = `Litera ${value.toUpperCase()} nie występuje w haśle.`;
+    state.game5.messageType = "is-error";
+  }
+
+  input.value = "";
+  renderGame5();
+}
+
+function processGame5Phrase(section) {
+  const input = section.querySelector("[data-game5-guess-input]");
+  const guess = sanitizeText(input.value);
+  const phrase = GAME_5_PHRASES[state.game5.phraseIndex].phrase;
+
+  if (!guess) {
+    showToast("Wpisz całe hasło.", "error");
+    return;
+  }
+
+  if (normalizePhrase(guess) === normalizePhrase(phrase)) {
+    state.game5.solved = true;
+    state.game5.statusMessage = `Poprawnie. Odkryto hasło. Aktualna stawka to ${formatSigned(state.game5.roundValue)} pkt.`;
+    state.game5.messageType = "is-success";
+  } else {
+    state.game5.statusMessage = "To nie jest poprawne hasło.";
+    state.game5.messageType = "is-error";
+  }
+
+  input.value = "";
+  renderGame5();
 }
 
 function renderMaskedPhrase(container, phrase) {
-  const revealedSet = new Set(state.game5.guessedLetters.map((letter) => normalizeLetter(letter)));
-  const shouldRevealAll = state.game5.solved;
+  const guessedSet = new Set(state.game5.guessedLetters.map((letter) => normalizeLetter(letter)));
+  const revealAll = state.game5.solved;
 
   container.innerHTML = Array.from(phrase).map((character) => {
     if (character === " ") {
@@ -1178,85 +1214,25 @@ function renderMaskedPhrase(container, phrase) {
     }
 
     const normalizedCharacter = normalizeLetter(character);
-    const visibleCharacter = shouldRevealAll || revealedSet.has(normalizedCharacter) ? character.toUpperCase() : "_";
-    return `<span class="phrase-cell">${visibleCharacter}</span>`;
+    const visible = revealAll || guessedSet.has(normalizedCharacter) ? character.toUpperCase() : "_";
+    return `<span class="phrase-cell">${visible}</span>`;
   }).join("");
 }
 
-function renderLettersGrid(container, letters, missed) {
+function renderLetters(container, letters, missed) {
   container.innerHTML = letters.length
     ? letters.map((letter) => `<span class="letter-chip ${missed ? "missed" : ""}">${letter}</span>`).join("")
     : `<span class="letter-chip ${missed ? "missed" : ""}">-</span>`;
 }
 
-function handleGame5LetterGuess(section) {
-  const input = section.querySelector("[data-game5-letter-input]");
-  const rawValue = sanitizeTeamName(input.value);
-
-  if (!rawValue || rawValue.length !== 1 || !LETTER_PATTERN.test(rawValue)) {
-    showToast("Wpisz jedną poprawną literę.", "error");
+function resetWheelOutput(wheelKey) {
+  const wheel = state.ui.wheels[wheelKey];
+  if (!wheel) {
     return;
   }
 
-  const normalizedLetterValue = normalizeLetter(rawValue);
-  const currentPhrase = GAME_5_PHRASES[state.game5.phraseIndex].phrase;
-  const phraseLetters = Array.from(currentPhrase).map((letter) => normalizeLetter(letter));
-
-  if (
-    state.game5.guessedLetters.some((letter) => normalizeLetter(letter) === normalizedLetterValue) ||
-    state.game5.missedLetters.some((letter) => normalizeLetter(letter) === normalizedLetterValue)
-  ) {
-    showToast("Ta litera była już użyta.", "error");
-    input.value = "";
-    return;
-  }
-
-  if (phraseLetters.includes(normalizedLetterValue)) {
-    state.game5.guessedLetters.push(rawValue.toUpperCase());
-    state.game5.statusMessage = `Litera ${rawValue.toUpperCase()} występuje w haśle.`;
-    state.game5.messageType = "is-success";
-  } else {
-    state.game5.missedLetters.push(rawValue.toUpperCase());
-    state.game5.statusMessage = `Litera ${rawValue.toUpperCase()} nie występuje w haśle.`;
-    state.game5.messageType = "is-error";
-  }
-
-  input.value = "";
-  renderGame5();
-}
-
-function handleGame5PhraseGuess(section) {
-  const input = section.querySelector("[data-game5-guess-input]");
-  const guess = sanitizeTeamName(input.value);
-  const targetPhrase = GAME_5_PHRASES[state.game5.phraseIndex].phrase;
-
-  if (!guess) {
-    showToast("Wpisz całe hasło.", "error");
-    return;
-  }
-
-  if (normalizePhrase(guess) === normalizePhrase(targetPhrase)) {
-    state.game5.solved = true;
-    state.game5.statusMessage = `Poprawnie. Hasło odkryte. Stawka rundy: ${formatSignedNumber(state.game5.roundValue)} pkt.`;
-    state.game5.messageType = "is-success";
-  } else {
-    state.game5.statusMessage = "To nie jest poprawne hasło.";
-    state.game5.messageType = "is-error";
-  }
-
-  input.value = "";
-  renderGame5();
-}
-
-function resetWheelResultBox(wheelKey, valueText, noteText) {
-  const wheelState = state.ui.wheels[wheelKey];
-
-  if (!wheelState) {
-    return;
-  }
-
-  wheelState.resultValue.textContent = valueText;
-  wheelState.resultNote.textContent = noteText;
+  wheel.resultValue.textContent = "Jeszcze nie zakręcono";
+  wheel.resultNote.textContent = "Koło pokazuje wynik punktowy lub pole specjalne.";
 }
 
 function bindGame6(section) {
@@ -1277,8 +1253,7 @@ function bindGame6(section) {
 
   section.querySelector("[data-game6-adjust-form]").addEventListener("submit", (event) => {
     event.preventDefault();
-    const input = section.querySelector("[data-game6-adjust-input]");
-    const adjustment = Number(input.value);
+    const adjustment = Number(section.querySelector("[data-game6-adjust-input]").value);
 
     if (!Number.isInteger(adjustment)) {
       showToast("Korekta musi być liczbą całkowitą.", "error");
@@ -1286,36 +1261,43 @@ function bindGame6(section) {
     }
 
     state.game6.roundScore += adjustment;
-    input.value = "0";
+    section.querySelector("[data-game6-adjust-input]").value = "0";
     updateGame6Display();
   });
 }
 
 function updateGame6Display() {
-  const scoreElement = document.querySelector("[data-game6-score]");
-
-  if (!scoreElement) {
-    return;
+  const display = document.querySelector("[data-game6-score]");
+  if (display) {
+    display.textContent = formatSigned(state.game6.roundScore);
   }
-
-  scoreElement.textContent = formatSignedNumber(state.game6.roundScore);
 }
 
 function showToast(message, type = "success") {
-  const toastStack = document.getElementById("toastStack");
   const toast = document.createElement("div");
-
   toast.className = `toast toast-${type}`;
   toast.textContent = message;
-  toastStack.appendChild(toast);
+  document.getElementById("toastStack").appendChild(toast);
 
   window.setTimeout(() => {
     toast.remove();
   }, 3200);
 }
 
-function formatSignedNumber(value) {
+function getRoundById(roundId) {
+  return ROUND_CONFIG.find((round) => round.id === roundId);
+}
+
+function getRoundIndex(roundId) {
+  return ROUND_CONFIG.findIndex((round) => round.id === roundId);
+}
+
+function formatSigned(value) {
   return value > 0 ? `+${value}` : String(value);
+}
+
+function sanitizeText(value) {
+  return String(value || "").trim();
 }
 
 function normalizeLetter(value) {
@@ -1329,13 +1311,9 @@ function normalizePhrase(value) {
     .toLocaleUpperCase("pl-PL");
 }
 
-function sanitizeTeamName(value) {
-  return String(value || "").trim();
-}
-
 function toInteger(value) {
-  const numeric = Number(value);
-  return Number.isInteger(numeric) ? numeric : 0;
+  const parsed = Number(value);
+  return Number.isInteger(parsed) ? parsed : 0;
 }
 
 function readLocalStorage(key, fallbackValue) {

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Nowoczesna aplikacja do prowadzenia wieczoru gier dla dwóch drużyn.">
+  <meta name="description" content="Panel prowadzącego do obsługi wieczoru gier dla dwóch drużyn.">
   <title>Game Night Competition</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -18,7 +18,7 @@
 
   <header class="topbar">
     <div class="brand-block">
-      <p class="eyebrow">Wieczór rywalizacji</p>
+      <p class="eyebrow">Live Event Control</p>
       <h1 class="brand-title">Game Night Competition</h1>
     </div>
 
@@ -41,17 +41,7 @@
       </button>
     </div>
 
-    <nav class="main-nav" id="mainNav" aria-label="Główna nawigacja">
-      <button class="nav-tab is-active" type="button" data-target="welcome">Start</button>
-      <button class="nav-tab" type="button" data-target="game-1">Gra 1</button>
-      <button class="nav-tab" type="button" data-target="game-2">Gra 2</button>
-      <button class="nav-tab" type="button" data-target="game-3">Gra 3</button>
-      <button class="nav-tab" type="button" data-target="game-4">Gra 4</button>
-      <button class="nav-tab" type="button" data-target="game-5">Gra 5</button>
-      <button class="nav-tab" type="button" data-target="game-6">Gra 6</button>
-      <button class="nav-tab" type="button" data-target="game-7">Gra 7</button>
-      <button class="nav-tab" type="button" data-target="final-score">Wynik końcowy</button>
-    </nav>
+    <nav class="main-nav" id="mainNav" aria-label="Główna nawigacja"></nav>
   </header>
 
   <main class="app-shell">
@@ -59,10 +49,10 @@
       <div class="hero-card glass-card">
         <div class="hero-copy">
           <p class="section-kicker">Start</p>
-          <h2>Przygotuj dzisiejszy pojedynek drużyn.</h2>
+          <h2>Przygotuj wielki wieczór rywalizacji.</h2>
           <p>
-            Wpisz nazwy obu zespołów, zapisz je lokalnie i wyślij do arkusza wyników,
-            aby od razu przejść do pierwszej gry.
+            Wpisz nazwy drużyn, zapisz je lokalnie, wyślij do arkusza wyników
+            i rusz z pierwszą rundą wydarzenia.
           </p>
         </div>
 
@@ -92,16 +82,16 @@
           </label>
 
           <div class="welcome-actions">
-            <button class="primary-button" type="submit">Rozpocznij grę</button>
+            <button class="primary-button pulse-button" type="submit">Rozpocznij wydarzenie</button>
             <p class="welcome-note">
-              Wyniki poszczególnych rund pozostają ukryte aż do ekranu podsumowania.
+              Wszystkie wyniki pozostają ukryte aż do finałowego podsumowania.
             </p>
           </div>
         </form>
       </div>
     </section>
 
-    <div id="gameViews"></div>
+    <div id="roundViews"></div>
 
     <section class="view-panel" id="final-score" data-view>
       <div class="panel-header panel-header-final">
@@ -109,7 +99,7 @@
           <p class="section-kicker">Finał</p>
           <h2>Wynik końcowy</h2>
           <p class="panel-subtitle">
-            Dopiero tutaj odsłaniamy pełne rezultaty wszystkich gier.
+            Tu pokazują się wszystkie rundy, intermisje i ostateczny zwycięzca wieczoru.
           </p>
         </div>
       </div>
@@ -120,7 +110,7 @@
             <table class="scoreboard-table">
               <thead>
                 <tr>
-                  <th>Gra</th>
+                  <th>Runda</th>
                   <th id="finalTeam1Header">Drużyna 1</th>
                   <th id="finalTeam2Header">Drużyna 2</th>
                 </tr>
@@ -138,77 +128,25 @@
         </div>
 
         <aside class="glass-card winner-card" id="winnerCard">
-          <p class="section-kicker">Zwycięzca</p>
-          <h3 id="winnerHeadline">Czekamy na zakończenie rozgrywek</h3>
+          <div class="winner-spotlight winner-spotlight-left"></div>
+          <div class="winner-spotlight winner-spotlight-right"></div>
+          <p class="section-kicker">Wielki finał</p>
+          <h3 id="winnerHeadline">WYGRYWA...</h3>
+          <div class="winner-reveal-name" id="winnerRevealName">Czekamy na wyniki</div>
           <p id="winnerMessage">
-            Po zapisaniu wszystkich gier pojawi się tu finałowe podsumowanie.
+            Po zapisaniu wszystkich rund pojawi się tutaj pełne widowiskowe ogłoszenie.
           </p>
           <div class="confetti confetti-a"></div>
           <div class="confetti confetti-b"></div>
           <div class="confetti confetti-c"></div>
+          <div class="confetti confetti-d"></div>
+          <div class="confetti confetti-e"></div>
         </aside>
       </div>
     </section>
   </main>
 
   <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true"></div>
-
-  <template id="gameTemplate">
-    <section class="view-panel game-panel" data-view>
-      <div class="panel-header">
-        <div>
-          <p class="section-kicker">Runda</p>
-          <h2 class="game-heading">Gra</h2>
-          <p class="panel-subtitle game-subtitle">
-            Zawartość tej rundy zostanie załadowana dynamicznie.
-          </p>
-        </div>
-        <span class="status-pill">Wyniki ukryte do finału</span>
-      </div>
-
-      <div class="game-grid">
-        <article class="glass-card game-card">
-          <div class="game-stage"></div>
-        </article>
-
-        <aside class="glass-card score-card">
-          <h3>Karta punktacji</h3>
-
-          <div class="team-badges">
-            <div class="team-badge team-badge-a">
-              <span>Drużyna 1</span>
-              <strong class="team-name team-name-1">Drużyna 1</strong>
-            </div>
-            <div class="team-badge team-badge-b">
-              <span>Drużyna 2</span>
-              <strong class="team-name team-name-2">Drużyna 2</strong>
-            </div>
-          </div>
-
-          <form class="score-form">
-            <label class="input-card">
-              <span>Punkty drużyny 1</span>
-              <input class="team1-score-input" type="number" step="1" value="0" required>
-            </label>
-
-            <label class="input-card">
-              <span>Punkty drużyny 2</span>
-              <input class="team2-score-input" type="number" step="1" value="0" required>
-            </label>
-
-            <p class="score-note">
-              Możesz wpisywać także wartości ujemne. Wyniki zapisują się ręcznie przez gospodarza.
-            </p>
-
-            <div class="action-row">
-              <button class="secondary-button save-score-button" type="submit">Zapisz wynik</button>
-              <button class="primary-button next-game-button" type="button">Następna gra &rarr;</button>
-            </div>
-          </form>
-        </aside>
-      </div>
-    </section>
-  </template>
 
   <script src="script.js"></script>
 </body>
