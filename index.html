@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Game Night Competition scoreboard for two teams.">
+  <title>Game Night Competition</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-background"></div>
+
+  <header class="topbar">
+    <div class="brand-block">
+      <p class="eyebrow">Live Event Dashboard</p>
+      <h1 class="brand-title">Game Night Competition</h1>
+    </div>
+
+    <button
+      class="menu-toggle"
+      id="menuToggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="mainNav"
+      aria-label="Toggle navigation"
+    >
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <nav class="main-nav" id="mainNav" aria-label="Primary">
+      <button class="nav-tab is-active" type="button" data-target="welcome">Welcome</button>
+      <button class="nav-tab" type="button" data-target="game-1">Game 1</button>
+      <button class="nav-tab" type="button" data-target="game-2">Game 2</button>
+      <button class="nav-tab" type="button" data-target="game-3">Game 3</button>
+      <button class="nav-tab" type="button" data-target="game-4">Game 4</button>
+      <button class="nav-tab" type="button" data-target="game-5">Game 5</button>
+      <button class="nav-tab" type="button" data-target="game-6">Game 6</button>
+      <button class="nav-tab" type="button" data-target="game-7">Game 7</button>
+      <button class="nav-tab" type="button" data-target="final-score">Final Score</button>
+    </nav>
+  </header>
+
+  <main class="app-shell">
+    <section class="view-panel is-active" id="welcome" data-view>
+      <div class="hero-card glass-card">
+        <div class="hero-copy">
+          <p class="section-kicker">Welcome</p>
+          <h2>Set up tonight's showdown.</h2>
+          <p>
+            Enter both team names to start the competition, initialize the score sheet,
+            and unlock the first game.
+          </p>
+        </div>
+
+        <form class="setup-form" id="welcomeForm">
+          <label class="input-card">
+            <span>Team 1 Name</span>
+            <input
+              id="team1Name"
+              name="team1Name"
+              type="text"
+              maxlength="40"
+              placeholder="Enter Team 1"
+              required
+            >
+          </label>
+
+          <label class="input-card">
+            <span>Team 2 Name</span>
+            <input
+              id="team2Name"
+              name="team2Name"
+              type="text"
+              maxlength="40"
+              placeholder="Enter Team 2"
+              required
+            >
+          </label>
+
+          <button class="primary-button" type="submit">Start Game</button>
+        </form>
+      </div>
+    </section>
+
+    <div id="gameViews"></div>
+
+    <section class="view-panel" id="final-score" data-view>
+      <div class="panel-header">
+        <div>
+          <p class="section-kicker">Reveal</p>
+          <h2>Final Scoreboard</h2>
+          <p class="panel-subtitle">
+            This is the first moment the full competition results are shown to players.
+          </p>
+        </div>
+      </div>
+
+      <div class="scoreboard-layout">
+        <div class="glass-card scoreboard-card">
+          <div class="table-wrap">
+            <table class="scoreboard-table">
+              <thead>
+                <tr>
+                  <th>Game</th>
+                  <th id="finalTeam1Header">Team 1</th>
+                  <th id="finalTeam2Header">Team 2</th>
+                </tr>
+              </thead>
+              <tbody id="scoreboardBody"></tbody>
+              <tfoot>
+                <tr>
+                  <th>Total</th>
+                  <th id="team1Total">0</th>
+                  <th id="team2Total">0</th>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <aside class="glass-card winner-card" id="winnerCard">
+          <p class="section-kicker">Champion</p>
+          <h3 id="winnerHeadline">Waiting for results</h3>
+          <p id="winnerMessage">
+            Complete all games to reveal the winner and celebration animation.
+          </p>
+          <div class="confetti confetti-a"></div>
+          <div class="confetti confetti-b"></div>
+          <div class="confetti confetti-c"></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <div class="toast-stack" id="toastStack" aria-live="polite" aria-atomic="true"></div>
+
+  <template id="gameTemplate">
+    <section class="view-panel game-panel" data-view>
+      <div class="panel-header">
+        <div>
+          <p class="section-kicker">Competition Round</p>
+          <h2 class="game-heading">Game</h2>
+          <p class="panel-subtitle">
+            Add future game logic or quiz content inside the game container below.
+          </p>
+        </div>
+        <span class="status-pill">Scores hidden until Final Score</span>
+      </div>
+
+      <div class="game-grid">
+        <article class="glass-card game-card">
+          <h3>Future Game Area</h3>
+          <div class="game-container">
+            <p>
+              This placeholder container is reserved for the custom mini-game,
+              quiz, or challenge for this round.
+            </p>
+          </div>
+        </article>
+
+        <article class="glass-card score-card">
+          <h3>Round Score Entry</h3>
+
+          <div class="team-badges">
+            <div class="team-badge team-badge-a">
+              <span>Team 1</span>
+              <strong class="team-name team-name-1">Team 1</strong>
+            </div>
+            <div class="team-badge team-badge-b">
+              <span>Team 2</span>
+              <strong class="team-name team-name-2">Team 2</strong>
+            </div>
+          </div>
+
+          <form class="score-form">
+            <label class="input-card">
+              <span>Team 1 Score</span>
+              <input class="team1-score-input" type="number" min="0" step="1" value="0" required>
+            </label>
+
+            <label class="input-card">
+              <span>Team 2 Score</span>
+              <input class="team2-score-input" type="number" min="0" step="1" value="0" required>
+            </label>
+
+            <div class="action-row">
+              <button class="secondary-button save-score-button" type="submit">Save Score</button>
+              <button class="primary-button next-game-button" type="button">Next Game →</button>
+            </div>
+          </form>
+        </article>
+      </div>
+    </section>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
