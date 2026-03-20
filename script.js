@@ -12,17 +12,17 @@ const DEFAULT_TEAMS = {
 };
 
 const ROUND_CONFIG = [
-  { id: "game-1", navLabel: "Gra 1", title: "Gra 1: Blef", summaryLabel: "Gra 1", kind: "game", layout: "compact", type: "blef" },
-  { id: "music-1", navLabel: "Kącik muzyczny 1", title: "Kącik muzyczny", summaryLabel: "Kącik muzyczny 1", kind: "intermission", layout: "compact", type: "music", ordinal: 1 },
-  { id: "game-2", navLabel: "Gra 2", title: "Gra 2: Ilość nie jakość", summaryLabel: "Gra 2", kind: "game", layout: "split", type: "quantity" },
-  { id: "acting-1", navLabel: "Odegraj postać 1", title: "Odegraj postać", summaryLabel: "Odegraj postać 1", kind: "intermission", layout: "compact", type: "acting", ordinal: 1 },
-  { id: "game-3", navLabel: "Gra 3", title: "Gra 3: Jaka to melodia", summaryLabel: "Gra 3: Jaka to melodia", kind: "game", layout: "compact", type: "melody" },
-  { id: "music-2", navLabel: "Kącik muzyczny 2", title: "Kącik muzyczny", summaryLabel: "Kącik muzyczny 2", kind: "intermission", layout: "compact", type: "music", ordinal: 2 },
-  { id: "game-4", navLabel: "Gra 4", title: "Gra 4: Kalambury", summaryLabel: "Gra 4", kind: "game", layout: "compact", type: "charades" },
-  { id: "acting-2", navLabel: "Debata", title: "Debata", summaryLabel: "Debata", kind: "intermission", layout: "compact", type: "debate", ordinal: 2 },
-  { id: "game-5", navLabel: "Gra 5", title: "Gra 5: Wisielec", summaryLabel: "Gra 5", kind: "game", layout: "split", type: "hangman" },
-  { id: "music-3", navLabel: "Kącik muzyczny 3", title: "Kącik muzyczny", summaryLabel: "Kącik muzyczny 3", kind: "intermission", layout: "compact", type: "music", ordinal: 3 },
-  { id: "game-6", navLabel: "Gra 6", title: "Gra 6: Znana postać", summaryLabel: "Gra 6", kind: "game", layout: "compact", type: "famous-person" }
+  { id: "game-1", navLabel: "Game 1", title: "Gra 1: Blef", summaryLabel: "Gra 1", kind: "game", layout: "compact", type: "blef" },
+  { id: "music-1", navLabel: "Mini Game 1", title: "Kącik muzyczny", summaryLabel: "Kącik muzyczny 1", kind: "intermission", layout: "compact", type: "music", ordinal: 1 },
+  { id: "game-2", navLabel: "Game 2", title: "Gra 2: Ilość nie jakość", summaryLabel: "Gra 2", kind: "game", layout: "split", type: "quantity" },
+  { id: "acting-1", navLabel: "Mini Game 2", title: "Odegraj postać", summaryLabel: "Odegraj postać 1", kind: "intermission", layout: "compact", type: "acting", ordinal: 1 },
+  { id: "game-3", navLabel: "Game 3", title: "Gra 3: Jaka to melodia", summaryLabel: "Gra 3: Jaka to melodia", kind: "game", layout: "compact", type: "melody" },
+  { id: "music-2", navLabel: "Mini Game 3", title: "Kącik muzyczny", summaryLabel: "Kącik muzyczny 2", kind: "intermission", layout: "compact", type: "music", ordinal: 2 },
+  { id: "game-4", navLabel: "Game 4", title: "Gra 4: Kalambury", summaryLabel: "Gra 4", kind: "game", layout: "compact", type: "charades" },
+  { id: "acting-2", navLabel: "Mini Game 4", title: "Debata", summaryLabel: "Debata", kind: "intermission", layout: "compact", type: "debate", ordinal: 2 },
+  { id: "game-5", navLabel: "Game 5", title: "Gra 5: Wisielec", summaryLabel: "Gra 5", kind: "game", layout: "split", type: "hangman" },
+  { id: "music-3", navLabel: "Mini Game 5", title: "Kącik muzyczny", summaryLabel: "Kącik muzyczny 3", kind: "intermission", layout: "compact", type: "music", ordinal: 3 },
+  { id: "game-6", navLabel: "Game 6", title: "Gra 6: Znana postać", summaryLabel: "Gra 6", kind: "game", layout: "compact", type: "famous-person" }
 ];
 
 const GAME_2_QUESTIONS = [
