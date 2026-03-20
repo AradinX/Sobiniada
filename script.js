@@ -16,10 +16,10 @@ const ROUND_CONFIG = [
   { id: "music-1", navLabel: "Kącik muzyczny 1", title: "Kącik muzyczny", summaryLabel: "Kącik muzyczny 1", kind: "intermission", layout: "compact", type: "music", ordinal: 1 },
   { id: "game-2", navLabel: "Gra 2", title: "Gra 2: Ilość nie jakość", summaryLabel: "Gra 2", kind: "game", layout: "split", type: "quantity" },
   { id: "acting-1", navLabel: "Odegraj postać 1", title: "Odegraj postać", summaryLabel: "Odegraj postać 1", kind: "intermission", layout: "compact", type: "acting", ordinal: 1 },
-  { id: "game-3", navLabel: "Gra 3", title: "Gra 3: Koło fortuny", summaryLabel: "Gra 3", kind: "game", layout: "split", type: "wheel" },
+  { id: "game-3", navLabel: "Gra 3", title: "Gra 3: Jaka to melodia", summaryLabel: "Gra 3: Jaka to melodia", kind: "game", layout: "compact", type: "melody" },
   { id: "music-2", navLabel: "Kącik muzyczny 2", title: "Kącik muzyczny", summaryLabel: "Kącik muzyczny 2", kind: "intermission", layout: "compact", type: "music", ordinal: 2 },
   { id: "game-4", navLabel: "Gra 4", title: "Gra 4: Kalambury", summaryLabel: "Gra 4", kind: "game", layout: "compact", type: "charades" },
-  { id: "acting-2", navLabel: "Odegraj postać 2", title: "Odegraj postać", summaryLabel: "Odegraj postać 2", kind: "intermission", layout: "compact", type: "acting", ordinal: 2 },
+  { id: "acting-2", navLabel: "Debata", title: "Debata", summaryLabel: "Debata", kind: "intermission", layout: "compact", type: "debate", ordinal: 2 },
   { id: "game-5", navLabel: "Gra 5", title: "Gra 5: Wisielec", summaryLabel: "Gra 5", kind: "game", layout: "split", type: "hangman" },
   { id: "music-3", navLabel: "Kącik muzyczny 3", title: "Kącik muzyczny", summaryLabel: "Kącik muzyczny 3", kind: "intermission", layout: "compact", type: "music", ordinal: 3 },
   { id: "game-6", navLabel: "Gra 6", title: "Gra 6: Znana postać", summaryLabel: "Gra 6", kind: "game", layout: "compact", type: "famous-person" }
@@ -59,18 +59,32 @@ const GAME_5_PHRASES = [
   { category: "Albumy", phrase: "A nu jaho i kóltóra mósi być" }
 ];
 
+const GAME_3_CATEGORIES = [
+  { label: "Owady", artist: "Manam", title: "Cykady na cykadach" },
+  { label: "Jezu Chrystus", artist: "Quebonafide", title: "Ciernie" },
+  { label: "Afirmacja", artist: "Sylwia Grzeszczak", title: "Małe Rzeczy" },
+  { label: "Emigracja", artist: "Big Cyc", title: "Makumba" }
+];
+
+const DEBATE_TOPICS = [
+  "Adrian Konrad powinien otrzymać pokojową nagrodę Nobla",
+  "Ślizg nie jest zabawnym ani pouczającym filmem"
+];
+
 const WHEEL_SEGMENTS = [
   { label: "+5", value: 5, kind: "score", color: "#4cdfa2" },
-  { label: "Piją wszyscy", kind: "event", color: "#23b7ff" },
+  { label: "Skip", kind: "skip", color: "#3b4f93" },
   { label: "-1", value: -1, kind: "score", color: "#7f5cff" },
   { label: "+10", value: 10, kind: "score", color: "#ffd166" },
   { label: "Bankrut", kind: "bankrupt", color: "#1b1f33" },
-  { label: "-5", value: -5, kind: "score", color: "#9b5dff" },
-  { label: "Pije twoja drużyna", kind: "event", color: "#36e0c7" },
   { label: "+1", value: 1, kind: "score", color: "#42c8ff" },
-  { label: "-20", value: -20, kind: "score", color: "#ff6b7d" },
+  { label: "Piją wszyscy", kind: "event", color: "#23b7ff" },
+  { label: "Skip", kind: "skip", color: "#314774" },
+  { label: "-5", value: -5, kind: "score", color: "#9b5dff" },
   { label: "+20", value: 20, kind: "score", color: "#ff9d63" },
   { label: "Pijesz ty", kind: "event", color: "#ff6ab0" },
+  { label: "+10", value: 10, kind: "score", color: "#f3e66d" },
+  { label: "Pije twoja drużyna", kind: "event", color: "#36e0c7" },
   { label: "-10", value: -10, kind: "score", color: "#ff4ec7" }
 ];
 
@@ -101,6 +115,9 @@ function createInitialState() {
       currentQuestion: 0,
       revealedAnswers: GAME_2_QUESTIONS.map((question) => Array(question.answers.length).fill(false))
     },
+    game3: {
+      revealedCategories: GAME_3_CATEGORIES.map(() => false)
+    },
     game5: {
       phraseIndex: 0,
       guessedLetters: [],
@@ -109,6 +126,9 @@ function createInitialState() {
       statusMessage: "Zakreć kołem i zacznij zgadywać litery.",
       messageType: "",
       solved: false
+    },
+    debate: {
+      selectedTopic: null
     },
     game6: { roundScore: 20 },
     ui: { timers: {}, wheels: {} }
@@ -253,9 +273,10 @@ function getRoundSubtitle(round) {
   const subtitles = {
     blef: "Szybki support-screen do rundy na żywo z ręcznym wpisaniem punktów.",
     quantity: "Pytania, odkrywanie odpowiedzi i stoper do licytacyjnej rywalizacji.",
-    wheel: "Koło fortuny z czytelnymi polami i widowiskowym spinem na żywo.",
+    melody: "Kategorie odsłaniają tytuły i wykonawców w klimacie teleturnieju muzycznego.",
     charades: "Minimalistyczny ekran prowadzącego z timerem i zasadami rundy.",
     hangman: "Wisielec z kołem, literami i podpowiedziami w stylu teleturnieju.",
+    debate: "Krótka debata z wyborem tematu, widocznym stoperem i ręczną oceną prowadzącego.",
     "famous-person": "Panel prowadzącego do szybkiego odejmowania punktów w trakcie zgadywania."
   };
 
@@ -363,20 +384,24 @@ function getRoundBodyMarkup(round) {
           </div>
         </div>
       `;
-    case "wheel":
+    case "melody":
       return `
-        <div class="stage-stack">
+        <div class="stage-stack melody-stage">
           <article class="feature-card">
-            <div class="round-chip">Koło fortuny na żywo</div>
-            <h3>Koło fortuny</h3>
+            <div class="round-chip">4 kategorie • ręczne punktowanie</div>
+            <h3>Jaka to melodia</h3>
             <ol class="rules-list">
-              <li>Na kole znajdują się pola dodatnie, ujemne i specjalne.</li>
-              <li>Każda drużyna musi minimum raz zakręcić kołem.</li>
-              <li>Po pierwszym razie może zdecydować, czy chce kontynuować.</li>
-              <li>Maksymalnie można kręcić 4 razy, chyba że wypadnie bankrut.</li>
+              <li>Każda z drużyn wybiera kategorię dla drużyny przeciwnej.</li>
+              <li>Do zdobycia jest 10 pkt za podanie wykonawcy i tytułu po 3-sekundowym fragmencie piosenki.</li>
+              <li>Można też zmniejszyć liczbę punktów do 5 pkt — wtedy prowadzący czyta 4 wersy piosenki.</li>
+              <li>Jeżeli zespół nie odgadnie poprawnie, drużyna przeciwna ma szansę na ukradnięcie punktów.</li>
             </ol>
           </article>
-          ${createWheelMarkup("game-3")}
+
+          <article class="feature-card">
+            <h3>Kategorie</h3>
+            <div class="melody-grid" data-melody-grid></div>
+          </article>
         </div>
       `;
     case "charades":
@@ -454,6 +479,40 @@ function getRoundBodyMarkup(round) {
               <button class="secondary-button" type="button" data-game5-next-phrase>Następne hasło</button>
             </div>
           </article>
+        </div>
+      `;
+    case "debate":
+      return `
+        <div class="stage-stack debate-stage">
+          <article class="feature-card">
+            <div class="round-chip">Pojedynek argumentów</div>
+            <h3>Debata</h3>
+            <ol class="rules-list">
+              <li>Zespół wyznacza jednego przedstawiciela do debaty.</li>
+              <li>Każdy gracz ma 60 sekund na uargumentowanie w jak najlepszy sposób otrzymanego stwierdzenia.</li>
+              <li>O wygranej i liczbie punktów decyduje prowadzący.</li>
+            </ol>
+          </article>
+
+          <div class="stage-grid two-columns">
+            <article class="feature-card" data-timer-widget="acting-2">
+              <h3>Timer debaty</h3>
+              <div class="timer-display" data-timer-display>01:00</div>
+              <div class="quick-actions">
+                <button class="primary-button" type="button" data-timer-start>Start</button>
+                <button class="ghost-button" type="button" data-timer-pause>Pauza</button>
+                <button class="ghost-button" type="button" data-timer-reset>Reset</button>
+              </div>
+            </article>
+
+            <article class="feature-card">
+              <h3>Wybierz temat</h3>
+              <div class="debate-topic-grid" data-debate-grid></div>
+              <div class="message-box" data-debate-selected>
+                Wybierz temat, aby pokazać pełne stwierdzenie.
+              </div>
+            </article>
+          </div>
         </div>
       `;
     case "famous-person":
@@ -561,11 +620,18 @@ function setupRoundFeatures(section, round) {
   }
 
   if (round.id === "game-3") {
-    initializeWheel(section.querySelector('[data-wheel-widget="game-3"]'), "wheel-game-3", handleGame3WheelResult);
+    bindGame3(section);
+    renderGame3();
   }
 
   if (round.id === "game-4") {
     setupTimerWidget(section.querySelector('[data-timer-widget="game-4"]'), "timer-game-4", DEFAULT_TIMER_SECONDS);
+  }
+
+  if (round.id === "acting-2") {
+    setupTimerWidget(section.querySelector('[data-timer-widget="acting-2"]'), "timer-acting-2", DEFAULT_TIMER_SECONDS);
+    bindDebate(section);
+    renderDebate();
   }
 
   if (round.id === "game-5") {
@@ -887,6 +953,88 @@ function renderGame2Question() {
   nextButton.textContent = questionIndex === GAME_2_QUESTIONS.length - 1 ? "To już ostatnie pytanie" : "Następne pytanie";
 }
 
+function bindGame3(section) {
+  const grid = section.querySelector("[data-melody-grid]");
+
+  grid.addEventListener("click", (event) => {
+    const tile = event.target.closest("[data-melody-index]");
+    if (!tile) {
+      return;
+    }
+
+    const tileIndex = Number(tile.dataset.melodyIndex);
+    if (state.game3.revealedCategories[tileIndex]) {
+      return;
+    }
+
+    state.game3.revealedCategories[tileIndex] = true;
+    renderGame3();
+  });
+}
+
+function renderGame3() {
+  const section = document.getElementById("game-3");
+  if (!section) {
+    return;
+  }
+
+  section.querySelector("[data-melody-grid]").innerHTML = GAME_3_CATEGORIES.map((category, index) => {
+    const isRevealed = state.game3.revealedCategories[index];
+    return `
+      <button
+        class="melody-tile ${isRevealed ? "is-revealed" : ""}"
+        type="button"
+        data-melody-index="${index}"
+      >
+        <span class="melody-tile-inner">
+          <span class="melody-face melody-front">
+            <span class="round-chip">Kategoria</span>
+            <strong>${category.label}</strong>
+          </span>
+          <span class="melody-face melody-back">
+            <span class="melody-answer-line">${category.artist}</span>
+            <span class="melody-answer-line">${category.title}</span>
+          </span>
+        </span>
+      </button>
+    `;
+  }).join("");
+}
+
+function bindDebate(section) {
+  section.querySelector("[data-debate-grid]").addEventListener("click", (event) => {
+    const topicButton = event.target.closest("[data-debate-index]");
+    if (!topicButton) {
+      return;
+    }
+
+    state.debate.selectedTopic = Number(topicButton.dataset.debateIndex);
+    renderDebate();
+  });
+}
+
+function renderDebate() {
+  const section = document.getElementById("acting-2");
+  if (!section) {
+    return;
+  }
+
+  section.querySelector("[data-debate-grid]").innerHTML = DEBATE_TOPICS.map((topic, index) => `
+    <button
+      class="debate-topic-card ${state.debate.selectedTopic === index ? "is-selected" : ""}"
+      type="button"
+      data-debate-index="${index}"
+    >
+      <span class="round-chip">Temat ${index + 1}</span>
+      <strong>${topic}</strong>
+    </button>
+  `).join("");
+
+  section.querySelector("[data-debate-selected]").textContent = state.debate.selectedTopic === null
+    ? "Wybierz temat, aby pokazać pełne stwierdzenie."
+    : `Wybrano: ${DEBATE_TOPICS[state.debate.selectedTopic]}`;
+}
+
 function setupTimerWidget(widget, timerKey, durationSeconds) {
   if (!widget) {
     return;
@@ -1105,6 +1253,10 @@ function handleGame5WheelResult(segment, wheel) {
     state.game5.statusMessage = `Aktualna stawka tej próby to ${formatSigned(segment.value)} pkt.`;
     state.game5.messageType = "";
     wheel.resultNote.textContent = "Jeśli hasło zostanie odgadnięte, wpisz tę wartość do punktacji.";
+  } else if (segment.kind === "skip") {
+    state.game5.statusMessage = "Skip. Ta próba przepada i możesz przejść dalej.";
+    state.game5.messageType = "";
+    wheel.resultNote.textContent = "Pole skip pomija próbę bez przyznawania punktów.";
   } else if (segment.kind === "bankrupt") {
     state.game5.roundValue = 0;
     state.game5.statusMessage = "Bankrut. Stawka rundy wraca do 0 pkt.";
