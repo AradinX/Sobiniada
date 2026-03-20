@@ -1026,7 +1026,7 @@ function renderDebate() {
       data-debate-index="${index}"
     >
       <span class="round-chip">Temat ${index + 1}</span>
-      <strong>${topic}</strong>
+      <strong>${state.debate.selectedTopic === index ? topic : `Temat ${index + 1}`}</strong>
     </button>
   `).join("");
 
